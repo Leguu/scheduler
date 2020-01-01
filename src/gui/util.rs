@@ -1,5 +1,6 @@
 use super::*;
 
+// Pops up a simple dialog, press the X to close it
 pub(super) fn message_dialog(text: &str) {
 	MessageDialog::new(
 		None::<&Window>,
@@ -11,6 +12,7 @@ pub(super) fn message_dialog(text: &str) {
 	.run();
 }
 
+// Takes a grid and clears it, very not efficient
 pub(super) fn clear(grid: &Grid) {
 	for i in 1..100 {
 		grid.remove_column(i);
@@ -23,6 +25,7 @@ pub(super) fn clear(grid: &Grid) {
 	}
 }
 
+// Creates a grid with 3 pieces of text
 pub(super) fn triple_grid(text1: &str, text2: &str, text3: &str) -> Grid {
 	let grid = Grid::new();
 	let t1 = text_with_default(text1, None);
@@ -40,6 +43,7 @@ pub(super) fn triple_grid(text1: &str, text2: &str, text3: &str) -> Grid {
 	grid
 }
 
+// Creates a textbox with default text in it
 pub(super) fn text_with_default(text: &str, wrapmd: Option<WrapMode>) -> TextView {
 	let temp = TextView::new();
 	temp.get_buffer().unwrap().set_text(text);
@@ -49,6 +53,7 @@ pub(super) fn text_with_default(text: &str, wrapmd: Option<WrapMode>) -> TextVie
 	temp
 }
 
+// Creates a frame with text inside it
 pub(super) fn frame_with_text<P: IsA<Widget>>(text: &str, widget: &P) -> Frame {
 	let tmp = Frame::new(Some(text));
 	tmp.add(widget);

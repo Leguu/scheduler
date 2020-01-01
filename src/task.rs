@@ -5,6 +5,7 @@ use super::*;
 pub struct Task {
 	pub name: String,
 	pub desc: String,
+	// "due: Date" sounds nice, doesn't it?
 	pub due: Date,
 	/// A list of the steps for that task, as in (is it completed, name of step)
 	pub steps: Vec<(bool, String)>,
@@ -27,6 +28,7 @@ impl Task {
 	pub fn is_complete(&self) -> bool {
 		// Functional programming for the win!
 		// Checks if any() steps are !complete
+		// If even one step is incomplete, then this function will return false
 		!self.steps.iter().any(|(complete, _)| !complete)
 	}
 
@@ -56,11 +58,11 @@ impl Task {
 	}
 }
 
-//  //////// //////  ////// //////// //////
-//     //    //      //        //    //
-//     //    //////  //////    //    //////
-//     //    //          //    //        //
-//     //    //////  //////    //    //////
+//  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
+//     XX    XX      XX        XX    XX
+//     XX    XXXXX   XXXXXX    XX    XXXXXX
+//     XX    XX          XX    XX        XX
+//     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
 mod tests {

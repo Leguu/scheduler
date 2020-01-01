@@ -40,6 +40,7 @@ impl Date {
 
 	/// Returns the date of today
 	pub fn today() -> Self {
+		// We don't want to mess with different OS interfaces, so I'm just going to depend on Chrono for this one
 		let localtime = Local::now();
 		Self::new(
 			localtime.year() as u16,
@@ -61,24 +62,33 @@ impl TryFrom<String> for Date {
 	type Error = ();
 	/// The correct format here is YYYY-MM-DD, no other is accepted
 	fn try_from(string: String) -> Result<Self, ()> {
+		// First, split the string by '-', so we get 3 parts
 		let segments: Vec<&str> = string.split('-').collect();
 
+		// If the number of parts is less than 3, then return error
+		// If the number of parts is more than 3, you messed something up and I don't care
+		// (It'll probably still return an error later)
 		if segments.len() < 3 {
 			return Err(());
 		}
 
+		// Weird construct, only possible in Rust
+		// If we can parse each element correctly, then we return a new date containing it
+		// Otherwise we return an error
 		if let (Ok(year), Ok(month), Ok(day)) = (
 			segments[0].parse(),
 			segments[1].parse(),
 			segments[2].parse(),
 		) {
-			return Date::new(year, month, day);
+			Date::new(year, month, day)
+		} else {
+			Err(())
 		}
-		Err(())
 	}
 }
 
 // Implementing Add for Date, so we can do Date + Date
+// This function isn't that useful and is used rarely, so I won't comment it
 impl std::ops::Add<usize> for Date {
 	type Output = Date;
 
@@ -102,11 +112,11 @@ impl fmt::Display for Date {
 	}
 }
 
-//  //////// //////  ////// //////// //////
-//     //    //      //        //    //
-//     //    //////  //////    //    //////
-//     //    //          //    //        //
-//     //    //////  //////    //    //////
+//  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
+//     XX    XX      XX        XX    XX
+//     XX    XXXXX   XXXXXX    XX    XXXXXX
+//     XX    XX          XX    XX        XX
+//     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
 mod date_tests {

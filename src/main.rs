@@ -1,3 +1,5 @@
+// Stops compiler warnings for dead code
+// TODO: Remove this once the project is complete
 #![allow(dead_code)]
 
 use std::cell::RefCell;
@@ -48,24 +50,3 @@ mod clock;
 mod course;
 mod gui;
 mod task;
-
-// Random stuff:
-
-// let mut math = Course::new("Math", "Bob", "SF14");
-// math.add_time(
-// 	Day::Thursday,
-// 	Time::new(5, 0).unwrap(),
-// 	Time::new(12, 0).unwrap(),
-// );
-// math.add_task("Say hi", "Idk", Date::new(2019, 11, 24).unwrap());
-// math.add_task("why do I do this?", "sdf", Date::new(2020, 11, 24).unwrap());
-// let mut science = Course::new("Science", "John", "SF18");
-// science.add_time(
-// 	Day::Thursday,
-// 	Time::new(2, 0).unwrap(),
-// 	Time::new(6, 0).unwrap(),
-// );
-// application.borrow_mut().add_course(math);
-// application.borrow_mut().add_course(science);
-
-// application.borrow_mut().save(location);

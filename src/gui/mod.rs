@@ -12,6 +12,22 @@ pub mod menu;
 pub mod util;
 pub mod window;
 
+// Welcome brave soul to the `gui` module.
+// This module is split into 3 different components
+// The first is the one you're in, and is the entry-point
+
+// The function below sets up the "main menu", with the 4 buttons on the side
+// Also, this function is probably one of the nicer ones in this module, so you have been warned
+// menu.rs contains the functions that set up the GUI for each of the 4 side-buttons
+// window.rs contains those that pop up a new window
+
+// The functions and macros in util.rs are... merely for utility purposes
+// They reduce the boilerplate by quite a bit, thankfully
+
+// I have not bothered commenting most of this junk because 90% of the code is boilerplate anyway
+// I sincerely hope I will never have to see this module ever again in my life
+// That is all.
+
 pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 	let window = ApplicationWindow::new(app);
 	let grid = Grid::new();

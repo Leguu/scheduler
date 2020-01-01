@@ -38,24 +38,60 @@ impl Course {
 	/// Horrendous function that checks every time and finds overlaps, removing them if necessary
 	/// "If it works but looks absolutely terrible, refactor it later"
 	/// - Me, 2020-01-01
+	/// This function is similar to `recheck_holidays` in application.rs, so if you read that you can skip this
 	fn recheck_times(&mut self) {
 		let mut len = self.times.len();
+		// Since we don't know whether there are duplicates, we need to check every time against every other
+		// Therefore, we have a nested for loop that iterates over the index of every element in the Vec
 		for i in 0..len {
 			for j in 0..len {
+				// We reset the len variable because we're removing items in the loop
 				len = self.times.len();
+
+				// We need to check if we're out of the loop now
+				// Also we check if we're comparing the same items, in which case we skip
 				if i >= len || j >= len {
 					return;
 				} else if i == j {
 					continue;
 				}
 
-				let (_, start_other, end_other) = self.times[j];
-				let (_, start_i, end_i) = &mut self.times[i];
+				// We get the elements at the array at this point
+				// start_i and end_i are mutable variables, which means we can change them
+				// start_other and end_other is what we're checking against
+				let (day_other, start_other, end_other) = self.times[j];
+				let (day_i, start_i, end_i) = &mut self.times[i];
 
+				// If the days aren't the same, we can't check them
+				if day_other != *day_i {
+					continue;
+				}
+
+				// If the start of the other date is in between the current element
 				if start_other.is_between(start_i, end_i) {
+					// Then we check if the current end is less than the end of the other one
+					// A helpful illustration (sorry if you're using non-monospaced fonts):
+
+					//    si       so         ei       eo
+					//    v        v          v        v
+					// <--|--------|----------|xxxxxxxx|-->
+
+					// si and ei stands for start_i and end_i
+					// so and eo stands for start_other and end_other
+					// If eo is further ahead than ei, then we have to move ei to eo
+					// Otherwise we will lose the area marked with the 'x's when we remove eo
+
 					if *end_i < end_other {
 						*end_i = end_other;
 					}
+
+					// If this case isn't true, then the illustration would look like this:
+
+					//    si       so         eo       ei
+					//    v        v          v        v
+					// <--|--------|----------|--------|-->
+
+					// And we can safely remove so and eo without having to move anything
 					self.times.remove(j);
 				}
 			}
@@ -64,6 +100,8 @@ impl Course {
 
 	pub fn add_time(&mut self, new_day: Day, new_start: Time, new_end: Time) {
 		self.times.push((new_day, new_start, new_end));
+		// Have to check it twice here, or else some edge cases won't catch
+		// TODO: Is there a way around this?
 		self.recheck_times();
 		self.recheck_times();
 	}
@@ -78,11 +116,11 @@ impl Course {
 	}
 }
 
-//  //////// //////  ////// //////// //////
-//     //    //      //        //    //
-//     //    //////  //////    //    //////
-//     //    //          //    //        //
-//     //    //////  //////    //    //////
+//  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
+//     XX    XX      XX        XX    XX
+//     XX    XXXXX   XXXXXX    XX    XXXXXX
+//     XX    XX          XX    XX        XX
+//     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
 mod tests {

@@ -17,6 +17,10 @@ impl Day {
 	/// Gets what day it is today
 	/// It's basically a wrapper for an external library, making it nicer for internal use
 	pub fn today() -> Self {
+		// We're depending on a foreign library for this
+		// Because, turns out, it's super difficult finding the day of a certain date
+		// This small function would be 10x longer if I had to implement this myself
+		// Thanks, developers of Chrono!
 		let localtime = Local::now();
 		match localtime.weekday() {
 			Sun => Self::Sunday,
@@ -47,3 +51,6 @@ impl fmt::Display for Day {
 		write!(f, "{}", self.as_str())
 	}
 }
+
+// Since this is only an enum, we don't need tests for it
+// What would you even test? assert!(Sunday != Monday);

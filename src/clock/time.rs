@@ -1,5 +1,6 @@
 use super::*;
 
+// This struct is very boring, not much complexity going on
 // See date.rs to understand #[derive()]
 #[derive(Serialize, Deserialize, PartialEq, PartialOrd, Debug, Clone, Copy)]
 pub struct Time {
@@ -32,15 +33,17 @@ impl fmt::Display for Time {
 	}
 }
 
-//  //////// //////  ////// //////// //////
-//     //    //      //        //    //
-//     //    //////  //////    //    //////
-//     //    //          //    //        //
-//     //    //////  //////    //    //////
+//  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
+//     XX    XX      XX        XX    XX
+//     XX    XXXXX   XXXXXX    XX    XXXXXX
+//     XX    XX          XX    XX        XX
+//     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
 mod time_tests {
 	use crate::clock::*;
+
+	// Why do I even need this many tests for such a small structure?
 
 	#[test]
 	fn validation() {
