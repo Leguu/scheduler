@@ -53,7 +53,7 @@ impl Application {
 				let (start_other, end_other) = self.holidays[j];
 				let (start_i, end_i) = &mut self.holidays[i];
 
-				if *start_i < start_other && start_other < *end_i {
+				if start_other.is_between(start_i, end_i) {
 					if *end_i < end_other {
 						*end_i = end_other;
 					}
@@ -65,12 +65,9 @@ impl Application {
 
 	/// Checks if `date` is a holiday or not.
 	pub fn is_holiday(&self, date: Date) -> bool {
-		for &(start, end) in &self.holidays {
-			if start < date && date < end {
-				return true;
-			}
-		}
-		false
+		self.holidays
+			.iter()
+			.any(|(start, end)| date.is_between(start, end))
 	}
 
 	/// Creates a new default holiday from today to today, and adds it to the list of holidays

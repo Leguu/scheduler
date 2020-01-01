@@ -49,14 +49,6 @@ mod course;
 mod gui;
 mod task;
 
-
-
-
-
-
-
-
-
 // Random stuff:
 
 // let mut math = Course::new("Math", "Bob", "SF14");

@@ -19,6 +19,11 @@ impl Time {
 	pub fn as_string(self) -> String {
 		format!("{:02}:{:02}", self.hour, self.minute)
 	}
+
+	/// Checks if the time is in between two other times
+	pub fn is_between(&self, start: &Time, end: &Time) -> bool {
+		start < self && self < end
+	}
 }
 
 impl fmt::Display for Time {
@@ -53,5 +58,18 @@ mod time_tests {
 		assert!(time1 < time2);
 		let time3 = Time::new(13, 0).unwrap();
 		assert!(time3 > time2 && time3 > time1);
+	}
+
+	#[test]
+	fn is_between() {
+		let start = Time::new(0, 0).unwrap();
+		let end = Time::new(6, 0).unwrap();
+		let time = Time::new(5, 0).unwrap();
+
+		assert!(time.is_between(&start, &end));
+
+		let other_time = Time::new(12, 0).unwrap();
+
+		assert!(!other_time.is_between(&start, &end));
 	}
 }

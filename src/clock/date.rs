@@ -33,6 +33,11 @@ impl Date {
 		}
 	}
 
+	/// Checks if the date is in between two other dates
+	pub fn is_between(&self, start: &Date, end: &Date) -> bool {
+		start < self && self < end
+	}
+
 	/// Returns the date of today
 	pub fn today() -> Self {
 		let localtime = Local::now();
@@ -128,5 +133,18 @@ mod date_tests {
 		let date1 = Date::new(1990, 1, 1);
 		let date2 = Date::new(2000, 1, 1);
 		assert!(date1 < date2);
+	}
+
+	#[test]
+	fn is_between() {
+		let start = Date::new(2020, 1, 1).unwrap();
+		let end = Date::new(2020, 12, 1).unwrap();
+		let date = Date::new(2020, 6, 1).unwrap();
+
+		assert!(date.is_between(&start, &end));
+
+		let other_date = Date::new(2021, 1, 1).unwrap();
+
+		assert!(!other_date.is_between(&start, &end));
 	}
 }

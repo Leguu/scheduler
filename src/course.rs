@@ -52,7 +52,7 @@ impl Course {
 				let (_, start_other, end_other) = self.times[j];
 				let (_, start_i, end_i) = &mut self.times[i];
 
-				if *start_i < start_other && start_other < *end_i {
+				if start_other.is_between(start_i, end_i) {
 					if *end_i < end_other {
 						*end_i = end_other;
 					}
@@ -74,14 +74,7 @@ impl Course {
 
 	/// Checks if there is a lesson on a specific day
 	pub fn is_on_day(&self, expected: Day) -> bool {
-		// For every day the course is on,
-		// Return True if the day is expected
-		for (day, _, _) in &self.times {
-			if *day == expected {
-				return true;
-			}
-		}
-		false
+		self.times.iter().any(|&(day, _, _)| day == expected)
 	}
 }
 
@@ -106,6 +99,15 @@ mod tests {
 		math.add_time(Day::Sunday, time(10, 0), time(12, 0));
 
 		assert_eq!(math.times, vec![(Day::Sunday, time(9, 0), time(12, 0),)]);
+	}
+
+	#[test]
+	fn is_on_day() {
+		let mut math = Course::new("Math", "Willis", "S37");
+		math.add_time(Day::Sunday, time(9, 0), time(11, 0));
+
+		assert!(math.is_on_day(Day::Sunday));
+		assert!(!math.is_on_day(Day::Monday));
 	}
 
 	#[test]
