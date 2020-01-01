@@ -29,15 +29,7 @@ pub(super) fn course(
 	let listbox_tasks = ListBox::new();
 	for task in &course.tasks {
 		listbox_tasks.insert(
-			&Label::new(Some(&format!(
-				"{}: {}",
-				if task.is_complete() {
-					"Done"
-				} else {
-					"Not Done"
-				},
-				task.desc
-			))),
+			&Label::new(Some(&format!("{}: {}", task.is_complete_str(), task.desc))),
 			-1,
 		);
 	}
@@ -48,12 +40,25 @@ pub(super) fn course(
 	grid.attach(&f2, 0, 1, 2, 1);
 	grid.attach(&f3, 0, 2, 2, 1);
 	grid.attach(&f4, 0, 3, 2, 1);
-	grid.attach(&Button::new_with_label("Add Time"), 0, 4, 1, 1);
+	let button_add_time = Button::new_with_label("Add Time");
+	let listbox_weak = listbox_times.downgrade();
+	let application_weak = Rc::downgrade(&application);
+	let gui_app_weak = gui_app.downgrade();
+	button_add_time.connect_clicked(move |_| {
+		if let Some(row) = up!(listbox_weak).get_selected_row() {
+			let time_index = row.get_index();
+			let application = application_weak.upgrade().unwrap();
+			let gui_app = gui_app_weak.upgrade().unwrap();
+			time_dialog(time_index as usize, index, application.clone(), &gui_app);
+		}
+	});
+	grid.attach(&button_add_time, 0, 4, 1, 1);
 	grid.attach(&Button::new_with_label("Rm Time"), 1, 4, 1, 1);
-	grid.attach(&f5, 0, 5, 2, 1);
-	grid.attach(&Button::new_with_label("Add Task"), 0, 6, 1, 1);
-	grid.attach(&Button::new_with_label("Rm Task"), 1, 6, 1, 1);
-	grid.attach(&Button::new_with_label("Edit Task"), 0, 7, 2, 1);
+	grid.attach(&Button::new_with_label("Edit Time"), 0, 5, 2, 1);
+	grid.attach(&f5, 0, 6, 2, 1);
+	grid.attach(&Button::new_with_label("Add Task"), 0, 7, 1, 1);
+	grid.attach(&Button::new_with_label("Rm Task"), 1, 7, 1, 1);
+	grid.attach(&Button::new_with_label("Edit Task"), 0, 8, 2, 1);
 
 	let button_save = Button::new_with_label("Save");
 	let application_weak = Rc::downgrade(&application);
@@ -62,40 +67,11 @@ pub(super) fn course(
 		let application = application_weak.upgrade().unwrap();
 		let course = &mut application.borrow_mut().courses[index];
 
-		let t1 = t1_weak.upgrade().unwrap();
-		let t2 = t2_weak.upgrade().unwrap();
-		let t3 = t3_weak.upgrade().unwrap();
+		let (t1, t2, t3) = (up!(t1_weak), up!(t2_weak), up!(t3_weak));
 
-		course.name = t1
-			.get_buffer()
-			.unwrap()
-			.get_text(
-				&t1.get_buffer().unwrap().get_bounds().0,
-				&t1.get_buffer().unwrap().get_bounds().1,
-				false,
-			)
-			.unwrap()
-			.to_string();
-		course.teacher = t2
-			.get_buffer()
-			.unwrap()
-			.get_text(
-				&t2.get_buffer().unwrap().get_bounds().0,
-				&t2.get_buffer().unwrap().get_bounds().1,
-				false,
-			)
-			.unwrap()
-			.to_string();
-		course.room = t3
-			.get_buffer()
-			.unwrap()
-			.get_text(
-				&t3.get_buffer().unwrap().get_bounds().0,
-				&t3.get_buffer().unwrap().get_bounds().1,
-				false,
-			)
-			.unwrap()
-			.to_string();
+		course.name = get_string_from_text!(t1);
+		course.teacher = get_string_from_text!(t2);
+		course.room = get_string_from_text!(t3);
 	});
 	grid.attach(&button_save, 0, 8, 2, 1);
 
@@ -129,32 +105,11 @@ pub(super) fn holiday(
 		let application = application_weak.upgrade().unwrap();
 		let holiday = &mut application.borrow_mut().holidays[index];
 
-		let t1 = t1_weak.upgrade().unwrap();
-		let t2 = t2_weak.upgrade().unwrap();
+		let (t1, t2) = (up!(t1_weak), up!(t2_weak));
 
 		if let (Ok(start), Ok(end)) = (
-			Date::try_from(
-				t1.get_buffer()
-					.unwrap()
-					.get_text(
-						&t1.get_buffer().unwrap().get_bounds().0,
-						&t1.get_buffer().unwrap().get_bounds().1,
-						false,
-					)
-					.unwrap()
-					.to_string(),
-			),
-			Date::try_from(
-				t2.get_buffer()
-					.unwrap()
-					.get_text(
-						&t2.get_buffer().unwrap().get_bounds().0,
-						&t2.get_buffer().unwrap().get_bounds().1,
-						false,
-					)
-					.unwrap()
-					.to_string(),
-			),
+			Date::try_from(get_string_from_text!(t1)),
+			Date::try_from(get_string_from_text!(t2)),
 		) {
 			holiday.0 = start;
 			holiday.1 = end;
@@ -164,6 +119,35 @@ pub(super) fn holiday(
 	});
 	grid.attach(&button_save, 0, 3, 1, 1);
 
+	window.add(&grid);
+	window.show_all();
+}
+
+/// TODO: INCOMPLETE
+pub(super) fn time_dialog(
+	time_index: usize,
+	course_index: usize,
+	application: Rc<RefCell<Application>>,
+	gui_app: &gtk::Application,
+) {
+	let course = &application.borrow().courses[course_index];
+	let (day, start, end) = course.times[time_index];
+
+	let grid = Grid::new();
+	let t1 = text_with_default(day.as_str(), None);
+	t1.set_left_margin(3);
+	t1.set_right_margin(3);
+	let t2 = text_with_default(&start.to_string(), None);
+	t2.set_left_margin(3);
+	t2.set_right_margin(3);
+	let t3 = text_with_default(&end.to_string(), None);
+	t3.set_left_margin(3);
+	t3.set_right_margin(3);
+	grid.attach(&t1, 0, 0, 1, 1);
+	grid.attach(&t2, 1, 0, 1, 1);
+	grid.attach(&t3, 2, 0, 1, 1);
+
+	let window = ApplicationWindow::new(gui_app);
 	window.add(&grid);
 	window.show_all();
 }

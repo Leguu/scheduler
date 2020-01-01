@@ -9,6 +9,7 @@ use crate::Application;
 use util::*;
 
 pub mod menu;
+#[macro_use]
 pub mod util;
 pub mod window;
 
@@ -34,6 +35,20 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 
 	let left_menu = ListBox::new();
 	left_menu.set_selection_mode(SelectionMode::None);
+
+	// The #1 reason why Rust makes it difficult to make UIs is in the lines below
+	// References can't be passed around willy-nilly like in C-derivative languages
+	// So, in order to pass around a reference to the application class, I need to downgrade it first
+	// This is only necessary for when we're creating closures that are called when (e.g.) someone presses a button
+	// Unfortunately, this means lots of `_weak` references and a lot of `.upgrade()`s
+	// I wanted to make a macro for this sort of work, but that was also very difficult
+
+	// As a warning to those (ie, me) who try to fix this, please increment the following counter:
+	//    attempts_at_fixing_this = 3
+
+	// Ideas: wait for rust to update its inefficient macro system?
+	//        maybe just port the entire project into a different language
+	//        try macros again
 
 	let button_holidays = Button::new_with_label("Holidays");
 	let grid_weak = grid.downgrade();

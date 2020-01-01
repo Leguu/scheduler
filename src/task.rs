@@ -56,6 +56,16 @@ impl Task {
 			self.steps.push((false, "Completed?".to_string()))
 		}
 	}
+
+	/// Returns a string based on whether it's complete or not
+	/// Useful only for the GUI
+	pub fn is_complete_str(&self) -> &str {
+		if self.is_complete() {
+			"Done"
+		} else {
+			"Not Done"
+		}
+	}
 }
 
 //  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
