@@ -1,0 +1,3 @@
+# Doesn't let git track the Cargo cache
+# Otherwise there'll be 15,000 files to commit every change :(
+target/
