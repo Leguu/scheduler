@@ -1,3 +1,4 @@
+use glib::clone;
 use gtk::prelude::*;
 use gtk::*;
 use std::cell::RefCell;
@@ -51,60 +52,67 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 	//        maybe just port the entire project into a different language
 	//        try macros again
 
+	// UPDATE 2020-01-02
+	// There's a new update for the GTK library that allows us to use the `clone` macro.
+	// This macro makes everything, so, so much easier.
+	// An example of how it makes things better:
+
+	// let button_courses = Button::new_with_label("Courses");
+	// let grid_weak = grid.downgrade();
+	// let window_weak = window.downgrade();
+	// let application_weak = Rc::downgrade(&application);
+	// let gui_app_weak = app.downgrade();
+	// button_courses.connect_clicked(move |_| {
+	// 	menu::courses(
+	// 		&grid_weak.upgrade().unwrap(),
+	// 		&gui_app_weak.upgrade().unwrap(),
+	// 		&window_weak.upgrade().unwrap(),
+	// 		application_weak.upgrade().unwrap(),
+	// 	);
+	// });
+
+	// Becomes...
+
+	// let button_courses = Button::new_with_label("Courses");
+	// button_courses.connect_clicked(clone!(
+	// 	@weak grid, @weak window, @weak application, @weak app => move |_| {
+	// 		menu::courses(&grid, &app, &window, application);
+	// 	}
+	// ));
+
 	let button_holidays = Button::new_with_label("Holidays");
-	let grid_weak = grid.downgrade();
-	let window_weak = window.downgrade();
-	let application_weak = Rc::downgrade(&application);
-	let gui_app_weak = app.downgrade();
-	button_holidays.connect_clicked(move |_| {
-		menu::holidays(
-			&gui_app_weak.upgrade().unwrap(),
-			&grid_weak.upgrade().unwrap(),
-			&window_weak.upgrade().unwrap(),
-			application_weak.upgrade().unwrap(),
-		);
-	});
+	button_holidays.connect_clicked(
+		clone!(@weak grid, @weak window, @weak application, @weak app
+		=> move |_| {
+			menu::holidays(&app, &grid, &window, application,);
+		}),
+	);
 	left_menu.insert(&button_holidays, 0);
 
 	let button_courses = Button::new_with_label("Courses");
-	let grid_weak = grid.downgrade();
-	let window_weak = window.downgrade();
-	let application_weak = Rc::downgrade(&application);
-	let gui_app_weak = app.downgrade();
-	button_courses.connect_clicked(move |_| {
-		menu::courses(
-			&grid_weak.upgrade().unwrap(),
-			&gui_app_weak.upgrade().unwrap(),
-			&window_weak.upgrade().unwrap(),
-			application_weak.upgrade().unwrap(),
-		);
-	});
+	button_courses.connect_clicked(
+		clone!(@weak grid, @weak window, @weak application, @weak app
+		=> move |_| {
+			menu::courses(&grid, &app, &window, application);
+		}),
+	);
 	left_menu.insert(&button_courses, 0);
 
 	let button_weekly = Button::new_with_label("Weekly");
-	let grid_weak = grid.downgrade();
-	let window_weak = window.downgrade();
-	let application_weak = Rc::downgrade(&application);
-	button_weekly.connect_clicked(move |_| {
-		menu::weekly(
-			&grid_weak.upgrade().unwrap(),
-			application_weak.upgrade().unwrap(),
-		);
-		window_weak.upgrade().unwrap().show_all();
-	});
+	button_weekly.connect_clicked(clone!(@weak grid, @weak window, @weak application
+	=> move |_| {
+		menu::weekly(&grid, application);
+		window.show_all();
+	}));
 	left_menu.insert(&button_weekly, 0);
 
 	let button_main = Button::new_with_label("Main");
-	let grid_weak = grid.downgrade();
-	let window_weak = window.downgrade();
-	let application_weak = Rc::downgrade(&application);
-	button_main.connect_clicked(move |_| {
-		menu::main(
-			&grid_weak.upgrade().unwrap(),
-			application_weak.upgrade().unwrap(),
-		);
-		window_weak.upgrade().unwrap().show_all();
-	});
+	button_main.connect_clicked(
+		clone!(@weak grid, @weak application, @weak window => move |_| {
+			menu::main(&grid, application);
+			window.show_all();
+		}),
+	);
 	left_menu.insert(&button_main, 0);
 
 	let left_menu_frame = FrameBuilder::new().label("Menu").build();

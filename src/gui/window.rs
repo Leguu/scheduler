@@ -41,17 +41,14 @@ pub(super) fn course(
 	grid.attach(&f3, 0, 2, 2, 1);
 	grid.attach(&f4, 0, 3, 2, 1);
 	let button_add_time = Button::new_with_label("Add Time");
-	let listbox_weak = listbox_times.downgrade();
-	let application_weak = Rc::downgrade(&application);
-	let gui_app_weak = gui_app.downgrade();
-	button_add_time.connect_clicked(move |_| {
-		if let Some(row) = up!(listbox_weak).get_selected_row() {
-			let time_index = row.get_index();
-			let application = application_weak.upgrade().unwrap();
-			let gui_app = gui_app_weak.upgrade().unwrap();
-			time_dialog(time_index as usize, index, application.clone(), &gui_app);
-		}
-	});
+	button_add_time.connect_clicked(
+		clone!(@weak listbox_times, @weak application, @weak gui_app => move |_| {
+			if let Some(row) = listbox_times.get_selected_row() {
+				let time_index = row.get_index();
+				time_dialog(time_index as usize, index, application.clone(), &gui_app);
+			}
+		}),
+	);
 	grid.attach(&button_add_time, 0, 4, 1, 1);
 	grid.attach(&Button::new_with_label("Rm Time"), 1, 4, 1, 1);
 	grid.attach(&Button::new_with_label("Edit Time"), 0, 5, 2, 1);
@@ -61,18 +58,14 @@ pub(super) fn course(
 	grid.attach(&Button::new_with_label("Edit Task"), 0, 8, 2, 1);
 
 	let button_save = Button::new_with_label("Save");
-	let application_weak = Rc::downgrade(&application);
-	let (t1_weak, t2_weak, t3_weak) = (t1.downgrade(), t2.downgrade(), t3.downgrade());
-	button_save.connect_clicked(move |_| {
-		let application = application_weak.upgrade().unwrap();
-		let course = &mut application.borrow_mut().courses[index];
-
-		let (t1, t2, t3) = (up!(t1_weak), up!(t2_weak), up!(t3_weak));
-
-		course.name = get_string_from_text!(t1);
-		course.teacher = get_string_from_text!(t2);
-		course.room = get_string_from_text!(t3);
-	});
+	button_save.connect_clicked(
+		clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
+			let course = &mut application.borrow_mut().courses[index];
+			course.name = get_string_from_text!(t1);
+			course.teacher = get_string_from_text!(t2);
+			course.room = get_string_from_text!(t3);
+		}),
+	);
 	grid.attach(&button_save, 0, 8, 2, 1);
 
 	window.add(&grid);
@@ -98,14 +91,8 @@ pub(super) fn holiday(
 	grid.attach(&f1, 0, 1, 1, 1);
 	grid.attach(&f2, 0, 2, 1, 1);
 	let button_save = Button::new_with_label("Save");
-	let application_weak = Rc::downgrade(&application);
-	let t1_weak = t1.downgrade();
-	let t2_weak = t2.downgrade();
-	button_save.connect_clicked(move |_| {
-		let application = application_weak.upgrade().unwrap();
+	button_save.connect_clicked(clone!(@weak t1, @weak t2, @weak application => move |_| {
 		let holiday = &mut application.borrow_mut().holidays[index];
-
-		let (t1, t2) = (up!(t1_weak), up!(t2_weak));
 
 		if let (Ok(start), Ok(end)) = (
 			Date::try_from(get_string_from_text!(t1)),
@@ -114,9 +101,9 @@ pub(super) fn holiday(
 			holiday.0 = start;
 			holiday.1 = end;
 		} else {
-			message_dialog("Date entry invalid. Use numbers only in format: YYYY-MM-DD.");
+			message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
 		}
-	});
+	}));
 	grid.attach(&button_save, 0, 3, 1, 1);
 
 	window.add(&grid);
