@@ -75,13 +75,13 @@ impl Course {
 					// Then we check if the current end is less than the end of the other one
 					// A helpful illustration (sorry if you're using non-monospaced fonts):
 
-					//    si       so         ei       eo
+					//    is       os         ie       oe
 					//    v        v          v        v
 					// <--|--------|----------|xxxxxxxx|-->
 
-					// si and ei stands for start_i and end_i
-					// so and eo stands for start_other and end_other
-					// If eo is further ahead than ei, then we have to move ei to eo
+					// is and ie stands for "i start" and "i end"
+					// os and oe stands for "other start" and "other end"
+					// If oe is further ahead than ie, then we have to move ie to oe
 					// Otherwise we will lose the area marked with the 'x's when we remove eo
 
 					if *end_i < end_other {
@@ -90,7 +90,7 @@ impl Course {
 
 					// If this case isn't true, then the illustration would look like this:
 
-					//    si       so         eo       ei
+					//    is       os         oe       ie
 					//    v        v          v        v
 					// <--|--------|----------|--------|-->
 

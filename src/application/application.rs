@@ -72,13 +72,13 @@ impl Application {
 					// Then we check if the current end is less than the end of the other one
 					// A helpful illustration (sorry if you're using non-monospaced fonts):
 
-					//    si       so         ei       eo
+					//    is       os         ie       oe
 					//    v        v          v        v
 					// <--|--------|----------|xxxxxxxx|-->
 
-					// si and ei stands for start_i and end_i
-					// so and eo stands for start_other and end_other
-					// If eo is further ahead than ei, then we have to move ei to eo
+					// is and ie stands for "i start" and "i end"
+					// os and oe stands for "other start" and "other end"
+					// If oe is further ahead than ie, then we have to move ie to oe
 					// Otherwise we will lose the area marked with the 'x's when we remove eo
 
 					if *end_i < end_other {
@@ -87,7 +87,7 @@ impl Application {
 
 					// If this case isn't true, then the illustration would look like this:
 
-					//    si       so         eo       ei
+					//    is       os         oe       ie
 					//    v        v          v        v
 					// <--|--------|----------|--------|-->
 
@@ -133,7 +133,7 @@ impl Application {
 	}
 
 	/// Saves this application to `location`.
-	/// Uses its in-memory location, see serialize.
+	/// Uses its in-memory representation, see `serialize`.
 	pub fn save(&self, location: &str) {
 		if File::open(location).is_err() {
 			let mut file = File::create(location).unwrap();
@@ -145,28 +145,21 @@ impl Application {
 	}
 
 	/// Tries to load an application from a file, returns an error if unsuccessful.
-	/// Looks complicated, but actually simple once you get to know it.
 	pub fn load(location: &str) -> std::result::Result<Self, ()> {
 		// If we can successfully open the file at `location`,
 		if let Ok(mut file) = File::open(location) {
-			// Then create a new buffer and read the contents of the file into it
 			let mut buf = Vec::new();
 			file.read_to_end(&mut buf).unwrap();
 			// Then, deserialize that buffer and return the result
 			Ok(Application::from(buf))
 		} else {
-			// If we cannot open the file, then return an error
 			Err(())
 		}
 	}
 
 	/// Tries to load an application, and returns an empty one if it fails.
 	pub fn load_or_default(location: &str) -> Self {
-		if let Ok(new) = Self::load(location) {
-			new
-		} else {
-			Self::new()
-		}
+		Self::load(location).unwrap_or(Self::new())
 	}
 }
 

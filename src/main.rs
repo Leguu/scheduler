@@ -11,8 +11,6 @@ use crate::application::Application;
 // Welcome to main!
 // This is pretty simple, and only exists to call other functions
 fn main() {
-	// The location where we want our save file to be
-	// It's relative to the directory Cargo.toml is
 	let location = "scheduler.bin";
 
 	// we HAVE to surround Application in an Rc and RefCell for our GUI to work
@@ -28,12 +26,10 @@ fn main() {
 	// Otherwise, see application.rs to understand the backend of the app
 	let gui_app = gtk::Application::new(None, Default::default()).unwrap();
 
-	// When the gui app is ready, create the UI
 	gui_app.connect_activate(move |app| {
 		gui::build_ui(&app, application.clone());
 	});
 
-	// And run!
 	gui_app.run(&[]);
 }
 
