@@ -2,14 +2,11 @@
 // TODO: Remove this once the project is complete
 #![allow(dead_code)]
 
+use gio::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use gio::prelude::*;
-use serde::{Deserialize, Serialize};
-
 use crate::application::Application;
-use crate::clock::*;
 
 // Welcome to main!
 // This is pretty simple, and only exists to call other functions
@@ -24,9 +21,7 @@ fn main() {
 	// RefCell allows us to modify application from wherever we want, using only an immutable reference
 	// Note that this is not allowed by the language by default, but is nonetheless necessary for GUI apps
 	// Seasoned Rust developers such as myself do not use Rc and RefCell unless absolutely necessary
-	let application = Rc::new(RefCell::new(application::Application::load_or_default(
-		location,
-	)));
+	let application = Rc::new(RefCell::new(Application::load_or_default(location)));
 
 	// The code below initializes the GUI application (GTK) and launches it
 	// See the `gui` module (directory) for all the GUI-related components
@@ -47,6 +42,4 @@ fn main() {
 // Rust is just weird in general
 pub mod application;
 pub mod clock;
-pub mod course;
 pub mod gui;
-pub mod task;

@@ -4,14 +4,14 @@ use std::cell::RefCell;
 use std::convert::TryFrom;
 use std::rc::Rc;
 
+use crate::application::Application;
 use crate::clock::*;
-use crate::Application;
 use util::*;
 
-pub mod menu;
 #[macro_use]
-pub mod util;
-pub mod window;
+mod util;
+mod menu;
+mod window;
 
 // Welcome brave soul to the `gui` module.
 // This module is split into 3 different components
@@ -29,6 +29,7 @@ pub mod window;
 // I sincerely hope I will never have to see this module ever again in my life
 // That is all.
 
+/// The function used to create the UI. Calls a whole lot of other functions in the GUI module.
 pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 	let window = ApplicationWindow::new(app);
 	let grid = Grid::new();
