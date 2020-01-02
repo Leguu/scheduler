@@ -47,13 +47,13 @@ impl Course {
 	///
 	/// This function is similar to `recheck_holidays` in application.rs, so if you read that you can skip this.
 	fn recheck_times(&mut self) {
-		let mut len = self.times.len();
+		let len = self.times.len();
 		// Since we don't know whether there are duplicates, we need to check every time against every other
 		// Therefore, we have a nested for loop that iterates over the index of every element in the Vec
 		for i in 0..len {
 			for j in 0..len {
 				// We reset the len variable because we're removing items in the loop
-				len = self.times.len();
+				let len = self.times.len();
 
 				// We need to check if we're out of the loop now
 				// Also we check if we're comparing the same items, in which case we skip

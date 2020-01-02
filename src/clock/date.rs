@@ -19,14 +19,12 @@ impl Date {
 		// Example, if self.month is 2 (February), then there is 28 days
 		let days_in_months = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-		// 1970 is the base year for no reason
+		// 1970 is the base year because of the unix epoch
 		// I assume my client is not a time traveller
 		// Maybe I should do another interview to check
-		if day == 0 || month == 0 || year < 1970 || month > 12 {
-			Err(())
-		// Checks if the day of the month is greater than that month allows
-		// [0, 31, 28,...] are the days in each month, and I'm accessing it with [month]
-		} else if day > days_in_months[month as usize] {
+		if (day == 0 || month == 0 || year < 1970 || month > 12)
+			|| (day > days_in_months[month as usize])
+		{
 			Err(())
 		} else {
 			Ok(Self { year, month, day })
@@ -151,10 +149,10 @@ mod tests {
 		let end = Date::new(2020, 12, 1).unwrap();
 		let date = Date::new(2020, 6, 1).unwrap();
 
-		assert!(date.is_between(&start, &end));
+		assert!(date.is_between(start, end));
 
 		let other_date = Date::new(2021, 1, 1).unwrap();
 
-		assert!(!other_date.is_between(&start, &end));
+		assert!(!other_date.is_between(start, end));
 	}
 }

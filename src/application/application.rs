@@ -38,13 +38,13 @@ impl Application {
 	///
 	/// This function is similar to `recheck_times` in course.rs, so if you read that you can skip this.
 	fn recheck_holidays(&mut self) {
-		let mut len = self.holidays.len();
+		let len = self.holidays.len();
 		// Since we don't know whether there are duplicates, we need to check every date against every other
 		// Therefore, we have a nested for loop that iterates over the index of every element in the Vec
 		for i in 0..len {
 			for j in 0..len {
 				// We reset the len variable because we're removing items in the loop
-				len = self.holidays.len();
+				let len = self.holidays.len();
 
 				// We need to check if we're out of the loop now
 				// Also we check if we're comparing the same items, in which case we skip
@@ -191,7 +191,7 @@ mod tests {
 
 	#[test]
 	fn recheck() {
-		let mut application = Application::new();
+		let mut application = Application::default();
 
 		application.add_holiday(date(2010, 6, 1), date(2010, 8, 1));
 		application.add_holiday(date(2010, 7, 1), date(2010, 9, 1));
@@ -218,7 +218,7 @@ mod tests {
 
 	#[test]
 	fn is_holiday() {
-		let mut application = Application::new();
+		let mut application = Application::default();
 
 		application.add_holiday(date(2010, 6, 1), date(2010, 8, 1));
 

@@ -90,10 +90,10 @@ mod tests {
 		let end = Time::new(6, 0).unwrap();
 		let time = Time::new(5, 0).unwrap();
 
-		assert!(time.is_between(&start, &end));
+		assert!(time.is_between(start, end));
 
 		let other_time = Time::new(12, 0).unwrap();
 
-		assert!(!other_time.is_between(&start, &end));
+		assert!(!other_time.is_between(start, end));
 	}
 }

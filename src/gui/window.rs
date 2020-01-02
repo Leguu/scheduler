@@ -102,7 +102,16 @@ pub(super) fn course(
 		}),
 	);
 	grid.attach(&button_rm_task, 1, 7, 1, 1);
-	grid.attach(&Button::new_with_label("Edit Task"), 0, 8, 2, 1);
+	let button_edit_task = Button::new_with_label("Edit Task");
+	button_edit_task.connect_clicked(
+		clone!(@weak listbox_tasks, @weak application, @weak gui_app => move |_| {
+			if let Some(row) = listbox_tasks.get_selected_row() {
+				let task_index = row.get_index() as usize;
+				window::task(index, task_index, &gui_app, application)
+			}
+		}),
+	);
+	grid.attach(&button_edit_task, 0, 8, 2, 1);
 
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(
@@ -153,6 +162,48 @@ pub(super) fn holiday(
 		}
 	}));
 	grid.attach(&button_save, 0, 3, 1, 1);
+
+	window.add(&grid);
+	window.show_all();
+}
+
+pub(super) fn task(
+	course_index: usize,
+	task_index: usize,
+	gui_app: &gtk::Application,
+	application: Rc<RefCell<Application>>,
+) {
+	let window = ApplicationWindow::new(gui_app);
+
+	let course = &mut application.borrow_mut().courses[course_index];
+	let task = &mut course.tasks[task_index];
+
+	let f1 = frame_with_text("Task Name", &text_with_default(&task.name, None));
+	let f2 = frame_with_text(
+		"Description",
+		&text_with_default(&task.desc, Some(WrapMode::Word)),
+	);
+	let f3 = frame_with_text("Due Date", &text_with_default(&task.due.to_string(), None));
+	f2.set_hexpand(true);
+
+	let listbox = ListBox::new();
+	for (done, desc) in &task.steps {
+		let done_desc = if *done { "Done" } else { "Undone" };
+		listbox.insert(&toggle_button(desc, done_desc), -1);
+	}
+	listbox.set_selection_mode(SelectionMode::None);
+
+	let f4 = Frame::new(Some("Task Steps"));
+	f4.add(&listbox);
+
+	let grid = Grid::new();
+	grid.attach(&f1, 0, 0, 2, 1);
+	grid.attach(&f2, 0, 1, 2, 1);
+	grid.attach(&f3, 0, 2, 2, 1);
+	grid.attach(&f4, 0, 3, 2, 1);
+	grid.attach(&Button::new_with_label("Add Step"), 0, 5, 1, 1);
+	grid.attach(&Button::new_with_label("Rm Step"), 1, 5, 1, 1);
+	grid.attach(&Button::new_with_label("Save"), 0, 6, 2, 1);
 
 	window.add(&grid);
 	window.show_all();
