@@ -47,6 +47,25 @@ impl Day {
 	}
 }
 
+// I am implementing TryFrom for the String class
+// This means we can *try* to convert any String into a Day
+// If this conversion fails, this method will return an Error
+impl TryFrom<String> for Day {
+	type Error = ();
+	fn try_from(string: String) -> Result<Self, ()> {
+		match string.as_str() {
+			"Sunday" => Ok(Self::Sunday),
+			"Monday" => Ok(Self::Monday),
+			"Tuesday" => Ok(Self::Tuesday),
+			"Wednesday" => Ok(Self::Wednesday),
+			"Thursday" => Ok(Self::Thursday),
+			"Friday" => Ok(Self::Friday),
+			"Saturday" => Ok(Self::Saturday),
+			_ => Err(()),
+		}
+	}
+}
+
 impl fmt::Display for Day {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(f, "{}", self.as_str())

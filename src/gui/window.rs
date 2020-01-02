@@ -42,16 +42,39 @@ pub(super) fn course(
 	grid.attach(&f4, 0, 3, 2, 1);
 	let button_add_time = Button::new_with_label("Add Time");
 	button_add_time.connect_clicked(
-		clone!(@weak listbox_times, @weak application, @weak gui_app => move |_| {
-			if let Some(row) = listbox_times.get_selected_row() {
-				let time_index = row.get_index();
-				time_dialog(time_index as usize, index, application.clone(), &gui_app);
-			}
+		clone!(@weak listbox_times, @weak application, @weak window => move |_| {
+			application.borrow_mut().courses[index].new_time();
+			let time = application.borrow().courses[index].times.last().unwrap().clone();
+			listbox_times.insert(
+				&Label::new(Some(&format!("{}: From {} to {}", time.0, time.1, time.2))),
+				-1,
+			);
+			window.show_all();
 		}),
 	);
 	grid.attach(&button_add_time, 0, 4, 1, 1);
-	grid.attach(&Button::new_with_label("Rm Time"), 1, 4, 1, 1);
-	grid.attach(&Button::new_with_label("Edit Time"), 0, 5, 2, 1);
+	let button_rm_time = Button::new_with_label("Rm Time");
+	button_rm_time.connect_clicked(
+		clone!( @weak listbox_times, @weak application, @weak window => move |_| {
+			if let Some(row) = listbox_times.get_selected_row() {
+				let time_index = row.get_index();
+				application.borrow_mut().courses[index as usize].times.remove(time_index as usize);
+				listbox_times.remove(&row);
+				window.show_all();
+			}
+		}),
+	);
+	grid.attach(&button_rm_time, 1, 4, 1, 1);
+	let button_edit_time = Button::new_with_label("Edit Time");
+	button_edit_time.connect_clicked(
+		clone!(@weak listbox_times, @weak application, @weak gui_app => move |_| {
+			if let Some(row) = listbox_times.get_selected_row() {
+				let time_index = row.get_index() as usize;
+				window::time_dialog(time_index, index, application.clone(), &gui_app)
+			}
+		}),
+	);
+	grid.attach(&button_edit_time, 0, 5, 2, 1);
 	grid.attach(&f5, 0, 6, 2, 1);
 	grid.attach(&Button::new_with_label("Add Task"), 0, 7, 1, 1);
 	grid.attach(&Button::new_with_label("Rm Task"), 1, 7, 1, 1);
@@ -92,14 +115,15 @@ pub(super) fn holiday(
 	grid.attach(&f2, 0, 2, 1, 1);
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(clone!(@weak t1, @weak t2, @weak application => move |_| {
-		let holiday = &mut application.borrow_mut().holidays[index];
-
 		if let (Ok(start), Ok(end)) = (
 			Date::try_from(get_string_from_text!(t1)),
 			Date::try_from(get_string_from_text!(t2)),
 		) {
-			holiday.0 = start;
-			holiday.1 = end;
+			if start > end {
+				message_dialog("Start date greater than end date!");
+			} else {
+				application.borrow_mut().holidays[index] = (start, end);
+			}
 		} else {
 			message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
 		}
@@ -110,7 +134,6 @@ pub(super) fn holiday(
 	window.show_all();
 }
 
-/// TODO: INCOMPLETE
 pub(super) fn time_dialog(
 	time_index: usize,
 	course_index: usize,
@@ -133,6 +156,28 @@ pub(super) fn time_dialog(
 	grid.attach(&t1, 0, 0, 1, 1);
 	grid.attach(&t2, 1, 0, 1, 1);
 	grid.attach(&t3, 2, 0, 1, 1);
+
+	let button_save = Button::new_with_label("Save");
+	button_save.connect_clicked(
+		clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
+			let course = &mut application.borrow_mut().courses[course_index];
+
+			if let (Ok(day), Ok(start), Ok(end)) = (
+				Day::try_from(get_string_from_text!(t1)),
+				Time::try_from(get_string_from_text!(t2)),
+				Time::try_from(get_string_from_text!(t3)),
+			) {
+				if start > end {
+					message_dialog("Start time greater than end time!");
+				} else {
+					course.times[time_index] = (day, start, end);
+				}
+			} else {
+				message_dialog("Time/Day entry invalid. Recheck entry, and only use numbers in format: 'HH-MM'.");
+			}
+		}),
+	);
+	grid.attach(&button_save, 0, 1, 3, 1);
 
 	let window = ApplicationWindow::new(gui_app);
 	window.add(&grid);

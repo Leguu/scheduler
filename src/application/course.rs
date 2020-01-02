@@ -101,6 +101,14 @@ impl Course {
 		}
 	}
 
+	pub fn new_time(&mut self) {
+		self.times.push((
+			Day::Sunday,
+			Time::new(0, 0).unwrap(),
+			Time::new(0, 0).unwrap(),
+		));
+	}
+
 	pub fn add_time(&mut self, new_day: Day, new_start: Time, new_end: Time) {
 		self.times.push((new_day, new_start, new_end));
 		// Have to check it twice here, or else some edge cases won't catch
