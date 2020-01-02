@@ -23,7 +23,7 @@ impl Time {
 	}
 
 	/// Checks if the time is in between two other times.
-	pub fn is_between(&self, start: &Time, end: &Time) -> bool {
+	pub fn is_between(self, start: Time, end: Time) -> bool {
 		start < self && self < end
 	}
 }

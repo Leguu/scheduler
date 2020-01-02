@@ -71,7 +71,7 @@ impl Course {
 				}
 
 				// If the start of the other date is in between the current element
-				if start_other.is_between(start_i, end_i) {
+				if start_other.is_between(*start_i, *end_i) {
 					// Then we check if the current end is less than the end of the other one
 					// A helpful illustration (sorry if you're using non-monospaced fonts):
 

@@ -68,7 +68,7 @@ impl Application {
 				let (start_i, end_i) = &mut self.holidays[i];
 
 				// If the start of the other date is in between the current element
-				if start_other.is_between(start_i, end_i) {
+				if start_other.is_between(*start_i, *end_i) {
 					// Then we check if the current end is less than the end of the other one
 					// A helpful illustration (sorry if you're using non-monospaced fonts):
 
@@ -104,7 +104,7 @@ impl Application {
 		// Does a for loop and checks the condition for each element
 		self.holidays
 			.iter()
-			.any(|(start, end)| date.is_between(start, end))
+			.any(|&(start, end)| date.is_between(start, end))
 	}
 
 	/// Creates a new default holiday from today to today, and adds it to the list of holidays.
@@ -159,7 +159,16 @@ impl Application {
 
 	/// Tries to load an application, and returns an empty one if it fails.
 	pub fn load_or_default(location: &str) -> Self {
-		Self::load(location).unwrap_or(Self::new())
+		Self::load(location).unwrap_or_default()
+	}
+}
+
+impl Default for Application {
+	fn default() -> Self {
+		Self {
+			courses: Vec::new(),
+			holidays: Vec::new(),
+		}
 	}
 }
 

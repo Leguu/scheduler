@@ -44,7 +44,7 @@ pub(super) fn course(
 	button_add_time.connect_clicked(
 		clone!(@weak listbox_times, @weak application, @weak window => move |_| {
 			application.borrow_mut().courses[index].new_time();
-			let time = application.borrow().courses[index].times.last().unwrap().clone();
+			let time = *application.borrow().courses[index].times.last().unwrap();
 			listbox_times.insert(
 				&Label::new(Some(&format!("{}: From {} to {}", time.0, time.1, time.2))),
 				-1,
@@ -70,7 +70,7 @@ pub(super) fn course(
 		clone!(@weak listbox_times, @weak application, @weak gui_app => move |_| {
 			if let Some(row) = listbox_times.get_selected_row() {
 				let time_index = row.get_index() as usize;
-				window::time_dialog(time_index, index, application.clone(), &gui_app)
+				window::time_dialog(time_index, index, application, &gui_app)
 			}
 		}),
 	);

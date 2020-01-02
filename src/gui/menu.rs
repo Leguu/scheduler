@@ -112,7 +112,7 @@ pub(super) fn courses(
 			application.borrow_mut().new_course();
 			// let len = application.borrow().courses.len();
 			// window::course(&gui_app_weak.upgrade().unwrap(), len - 1, application.clone());
-			courses(&grid, &gui_app, &window, application.clone());
+			courses(&grid, &gui_app, &window, application);
 		}),
 	);
 	grid.attach(&add_button, 1, 1, 1, 1);
@@ -123,7 +123,7 @@ pub(super) fn courses(
 			if let Some(row) = listbox.get_selected_row() {
 				let index = row.get_index();
 				application.borrow_mut().rm_course(index as usize);
-				courses(&grid, &gui_app, &window, application.clone());
+				courses(&grid, &gui_app, &window, application);
 			}
 		}),
 	);
@@ -168,7 +168,7 @@ pub(super) fn holidays(
 			application.borrow_mut().new_holiday();
 			// let len = application.borrow().holidays.len();
 			// window::holiday(&gui_app_weak.upgrade().unwrap(), len - 1, application.clone());
-			holidays(&gui_app, &grid, &window, application.clone());
+			holidays(&gui_app, &grid, &window, application);
 		}),
 	);
 	grid.attach(&add_button, 1, 1, 1, 1);
@@ -180,7 +180,7 @@ pub(super) fn holidays(
 				let index = row.get_index();
 				application.borrow_mut()
 					.rm_holiday(index as usize);
-				holidays(&gui_app, &grid, &window, application.clone());
+				holidays(&gui_app, &grid, &window, application);
 			}
 		}),
 	);
