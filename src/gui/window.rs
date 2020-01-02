@@ -122,7 +122,7 @@ pub(super) fn course(
 			course.room = get_string_from_text!(t3);
 		}),
 	);
-	grid.attach(&button_save, 0, 8, 2, 1);
+	grid.attach(&button_save, 0, 9, 2, 1);
 
 	window.add(&grid);
 	window.show_all();
@@ -191,7 +191,7 @@ pub(super) fn task(
 		let done_desc = if *done { "Done" } else { "Undone" };
 		listbox.insert(&toggle_button(desc, done_desc), -1);
 	}
-	listbox.set_selection_mode(SelectionMode::None);
+	// listbox.set_selection_mode(SelectionMode::None);
 
 	let f4 = Frame::new(Some("Task Steps"));
 	f4.add(&listbox);
@@ -201,8 +201,33 @@ pub(super) fn task(
 	grid.attach(&f2, 0, 1, 2, 1);
 	grid.attach(&f3, 0, 2, 2, 1);
 	grid.attach(&f4, 0, 3, 2, 1);
-	grid.attach(&Button::new_with_label("Add Step"), 0, 5, 1, 1);
-	grid.attach(&Button::new_with_label("Rm Step"), 1, 5, 1, 1);
+	let button_add_step = Button::new_with_label("Add Step");
+	button_add_step.connect_clicked(
+		clone!(@weak listbox, @weak application, @weak window => move |_| {
+			let course = &mut application.borrow_mut().courses[course_index];
+			let task = &mut course.tasks[task_index];
+			task.new_step();
+			let step = task.steps.last().unwrap();
+			listbox.insert(
+				&toggle_button(&step.1, "Undone"),
+				-1,
+			);
+			window.show_all();
+		}),
+	);
+	grid.attach(&button_add_step, 0, 5, 1, 1);
+	let button_rm_step = Button::new_with_label("Rm Step");
+	button_rm_step.connect_clicked(
+		clone!( @weak listbox, @weak application, @weak window => move |_| {
+			if let Some(row) = listbox.get_selected_row() {
+				let step_index = row.get_index();
+				application.borrow_mut().courses[course_index as usize].tasks[task_index].rm_step(step_index as usize);
+				listbox.remove(&row);
+				window.show_all();
+			}
+		}),
+	);
+	grid.attach(&button_rm_step, 1, 5, 1, 1);
 	grid.attach(&Button::new_with_label("Save"), 0, 6, 2, 1);
 
 	window.add(&grid);

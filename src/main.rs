@@ -11,7 +11,7 @@ use crate::application::Application;
 // Welcome to main!
 // This is pretty simple, and only exists to call other functions
 fn main() {
-	let location = "scheduler.bin";
+	let location = "edited_scheduler.bin";
 
 	// we HAVE to surround Application in an Rc and RefCell for our GUI to work
 	// Rust's ownership system makes GUI development difficult

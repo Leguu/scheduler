@@ -24,11 +24,13 @@ The contents of each module:
 
 For more information on how these structures work together, see the comments in their respective files. The 'TESTS' sections in the files only contain tests and no logic. However, they may help you understand how a certain function is meant to work. If you wish to check the `gui` module, start at `gui/mod.rs`.
 
+This project is versioned with git! You can check the git history using `git log`. Unfortunately, I initialized git a bit late into the process, so most of the application and clock modules' history is not available.
+
 ## Compilation Instructions
 
 The only dependencies you need to have installed on your system is GTK+3 and Rust itself. Keep in mind Rust will download additional dependencies when you compile, but those are only local (if you run `cargo clean`, it will delete all cached files). Here are some ways you can install it on your system:
 
-MacOS:
+MacOS (NOT TESTED):
 - Install [Homebrew](https://brew.sh/), a package manager for Mac.
 - Run: `brew install gtk+3` with `sudo` if necessary.
 - Install [Rust](https://www.rust-lang.org/tools/install).
@@ -38,7 +40,7 @@ Linux:
     - This may be apt, pacman, etc.
 - Install Rust in the same manner.
 
-Windows:
+Windows (NOT TESTED):
 - Install [Chocolatey](https://chocolatey.org/install), a package manager for Windows.
 - Run: `choco install gtk-runtime`
 - Install [Rust](https://www.rust-lang.org/tools/install).

@@ -80,14 +80,22 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 	// 	}
 	// ));
 
-	let button_holidays = Button::new_with_label("Holidays");
-	button_holidays.connect_clicked(
-		clone!(@weak grid, @weak window, @weak application, @weak app
-		=> move |_| {
-			menu::holidays(&app, &grid, &window, application,);
+	let button_main = Button::new_with_label("Main");
+	button_main.connect_clicked(
+		clone!(@weak grid, @weak application, @weak window => move |_| {
+			menu::main(&grid, application);
+			window.show_all();
 		}),
 	);
-	left_menu.insert(&button_holidays, 0);
+	left_menu.insert(&button_main, -1);
+
+	let button_weekly = Button::new_with_label("Weekly");
+	button_weekly.connect_clicked(clone!(@weak grid, @weak window, @weak application
+	=> move |_| {
+		menu::weekly(&grid, application);
+		window.show_all();
+	}));
+	left_menu.insert(&button_weekly, -1);
 
 	let button_courses = Button::new_with_label("Courses");
 	button_courses.connect_clicked(
@@ -96,24 +104,24 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 			menu::courses(&grid, &app, &window, application);
 		}),
 	);
-	left_menu.insert(&button_courses, 0);
+	left_menu.insert(&button_courses, -1);
 
-	let button_weekly = Button::new_with_label("Weekly");
-	button_weekly.connect_clicked(clone!(@weak grid, @weak window, @weak application
-	=> move |_| {
-		menu::weekly(&grid, application);
-		window.show_all();
-	}));
-	left_menu.insert(&button_weekly, 0);
-
-	let button_main = Button::new_with_label("Main");
-	button_main.connect_clicked(
-		clone!(@weak grid, @weak application, @weak window => move |_| {
-			menu::main(&grid, application);
-			window.show_all();
+	let button_holidays = Button::new_with_label("Holidays");
+	button_holidays.connect_clicked(
+		clone!(@weak grid, @weak window, @weak application, @weak app
+		=> move |_| {
+			menu::holidays(&app, &grid, &window, application,);
 		}),
 	);
-	left_menu.insert(&button_main, 0);
+	left_menu.insert(&button_holidays, -1);
+
+	let button_save = Button::new_with_label("Save");
+	button_save.connect_clicked(
+		clone!(@weak application => move |_| {
+			application.borrow().save("edited_scheduler.bin");
+		}),
+	);
+	left_menu.insert(&button_save, -1);
 
 	let left_menu_frame = FrameBuilder::new().label("Menu").build();
 	left_menu_frame.add(&left_menu);

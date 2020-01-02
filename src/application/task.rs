@@ -49,6 +49,11 @@ impl Task {
 		self.steps.push((false, description.into()));
 	}
 
+	/// Create a new, default step
+	pub fn new_step(&mut self) {
+		self.add_step("Description");
+	}
+
 	/// Removes a step to the task.
 	/// If it's the last step in the task, adds a new dummy step.
 	pub fn rm_step(&mut self, index: usize) {
