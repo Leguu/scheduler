@@ -10,11 +10,6 @@ edition = "2018"
 bincode = "1.2.0"
 serde = { version = "1.0.102", features = ["derive"] }
 chrono = "0.4.9"
-
-[dependencies.gtk]
-version = "0.7.0"
-features = ["v3_16"]
-
-[dependencies.gio]
-version = ""
-features = ["v2_44"]
+paste = "0.1.6"
+gtk = ""
+gio = ""
