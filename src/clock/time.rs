@@ -41,7 +41,7 @@ impl fmt::Display for Time {
 //     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
-mod time_tests {
+mod tests {
 	use crate::clock::*;
 
 	// Why do I even need this many tests for such a small structure?

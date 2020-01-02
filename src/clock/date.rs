@@ -120,7 +120,7 @@ impl fmt::Display for Date {
 //     XX    XXXXXX  XXXXX     XX    XXXXX
 
 #[cfg(test)]
-mod date_tests {
+mod tests {
 	use crate::clock::*;
 
 	#[test]
