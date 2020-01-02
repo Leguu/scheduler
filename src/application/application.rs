@@ -18,16 +18,9 @@ pub struct Application {
 }
 
 impl Application {
-	pub fn new() -> Self {
-		Self {
-			courses: Vec::new(),
-			holidays: Vec::new(),
-		}
-	}
-
 	/// Creates a new, default course and pushes it into the courses.
 	pub fn new_course(&mut self) {
-		self.courses.push(Course::new("Name", "Teacher", "Room"));
+		self.courses.push(Course::default());
 	}
 
 	pub fn add_course(&mut self, course: Course) {

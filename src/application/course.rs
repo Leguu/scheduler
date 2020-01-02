@@ -28,6 +28,10 @@ impl Course {
 		}
 	}
 
+	pub fn new_task(&mut self) {
+		self.tasks.push(Task::default());
+	}
+
 	pub fn add_task<T: Into<String>>(&mut self, name: T, desc: T, due: Date) {
 		self.tasks.push(Task::new(name, desc, due));
 	}
@@ -103,7 +107,7 @@ impl Course {
 
 	pub fn new_time(&mut self) {
 		self.times.push((
-			Day::Sunday,
+			Day::today(),
 			Time::new(0, 0).unwrap(),
 			Time::new(0, 0).unwrap(),
 		));
@@ -124,6 +128,12 @@ impl Course {
 	/// Checks if there is a lesson on a specific day
 	pub fn is_on_day(&self, expected: Day) -> bool {
 		self.times.iter().any(|&(day, _, _)| day == expected)
+	}
+}
+
+impl Default for Course {
+	fn default() -> Self {
+		Self::new("Name", "Description", "Room")
 	}
 }
 

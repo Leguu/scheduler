@@ -69,6 +69,12 @@ impl Task {
 	}
 }
 
+impl Default for Task {
+	fn default() -> Self {
+		Self::new("Name", "Description", Date::today())
+	}
+}
+
 //  XXXXXXXX XXXXXX   XXXXX XXXXXXXX  XXXXX
 //     XX    XX      XX        XX    XX
 //     XX    XXXXX   XXXXXX    XX    XXXXXX

@@ -76,8 +76,32 @@ pub(super) fn course(
 	);
 	grid.attach(&button_edit_time, 0, 5, 2, 1);
 	grid.attach(&f5, 0, 6, 2, 1);
-	grid.attach(&Button::new_with_label("Add Task"), 0, 7, 1, 1);
-	grid.attach(&Button::new_with_label("Rm Task"), 1, 7, 1, 1);
+	let button_add_task = Button::new_with_label("Add Task");
+	button_add_task.connect_clicked(
+		clone!(@weak listbox_tasks, @weak application, @weak window => move |_| {
+			let course = &mut application.borrow_mut().courses[index];
+			course.new_task();
+			let task = course.tasks.last().unwrap();
+			listbox_tasks.insert(
+				&Label::new(Some(&format!("{}: {}", task.is_complete_str(), task.name))),
+				-1,
+			);
+			window.show_all();
+		}),
+	);
+	grid.attach(&button_add_task, 0, 7, 1, 1);
+	let button_rm_task = Button::new_with_label("Rm Task");
+	button_rm_task.connect_clicked(
+		clone!( @weak listbox_tasks, @weak application, @weak window => move |_| {
+			if let Some(row) = listbox_tasks.get_selected_row() {
+				let task_index = row.get_index();
+				application.borrow_mut().courses[index as usize].tasks.remove(task_index as usize);
+				listbox_tasks.remove(&row);
+				window.show_all();
+			}
+		}),
+	);
+	grid.attach(&button_rm_task, 1, 7, 1, 1);
 	grid.attach(&Button::new_with_label("Edit Task"), 0, 8, 2, 1);
 
 	let button_save = Button::new_with_label("Save");
