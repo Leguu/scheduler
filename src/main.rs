@@ -45,8 +45,8 @@ fn main() {
 // Making these modules accessible
 // Rust has a weird module system
 // Rust is just weird in general
-mod application;
-mod clock;
-mod course;
-mod gui;
-mod task;
+pub mod application;
+pub mod clock;
+pub mod course;
+pub mod gui;
+pub mod task;

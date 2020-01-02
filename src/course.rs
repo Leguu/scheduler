@@ -3,14 +3,15 @@ use task::Task;
 
 // See application.rs to understand #[derive()]
 #[derive(Serialize, Deserialize, Clone, Debug)]
+/// This struct contains details for a course.
 pub struct Course {
-	/// The name, teacher, and room of this Course as Strings
+	/// The name, teacher, and room of this Course as Strings.
 	pub name: String,
 	pub teacher: String,
 	pub room: String,
-	/// A list of the timings for the course, as in (Sunday, from 10:30, to 12:30)
+	/// A list of the timings for the course, as in (Sunday, from 10:30, to 12:30).
 	pub times: Vec<(Day, Time, Time)>,
-	/// A list of all the tasks for that course
+	/// A list of all the tasks for that course.
 	pub tasks: Vec<Task>,
 }
 
@@ -31,14 +32,16 @@ impl Course {
 		self.tasks.push(Task::new(name, desc, due));
 	}
 
-	pub fn remove_task(&mut self, index: usize) {
+	pub fn rm_task(&mut self, index: usize) {
 		self.tasks.remove(index);
 	}
 
-	/// Horrendous function that checks every time and finds overlaps, removing them if necessary
+	/// Horrendous function that checks every time and finds overlaps, removing them if necessary.
+	///
 	/// "If it works but looks absolutely terrible, refactor it later"
-	/// - Me, 2020-01-01
-	/// This function is similar to `recheck_holidays` in application.rs, so if you read that you can skip this
+	///  - Me, 2020-01-01
+	///
+	/// This function is similar to `recheck_holidays` in application.rs, so if you read that you can skip this.
 	fn recheck_times(&mut self) {
 		let mut len = self.times.len();
 		// Since we don't know whether there are duplicates, we need to check every time against every other

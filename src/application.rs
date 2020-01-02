@@ -8,10 +8,12 @@ use std::io::*;
 // We can also clone it (basically copying the object to another location of memory, useful for passing to functions
 // And debug, which allows us to see a nice representation of the object using a print statement
 #[derive(Serialize, Deserialize, Clone, Debug)]
+/// The application struct is the main data structure in this program.
+/// It contains the methods and data necessary for the GUI to function.
 pub struct Application {
-	/// A list of all the courses the user has
+	/// A list of all the courses the user has.
 	pub courses: Vec<Course>,
-	/// A list of holidays made up of (starting date, ending date)
+	/// A list of holidays made up of (starting date, ending date).
 	pub holidays: Vec<(Date, Date)>,
 }
 
@@ -23,7 +25,7 @@ impl Application {
 		}
 	}
 
-	/// Creates a new, default course and pushes it into the courses
+	/// Creates a new, default course and pushes it into the courses.
 	pub fn new_course(&mut self) {
 		self.courses.push(Course::new("Name", "Teacher", "Room"));
 	}
@@ -36,10 +38,12 @@ impl Application {
 		self.courses.remove(index);
 	}
 
-	/// Horrendous function that checks every holiday and finds overlaps, removing them if necessary
+	/// Horrendous function that checks every holiday and finds overlaps, removing them if necessary.
+	///
 	/// "If it works but looks absolutely terrible, refactor it later"
-	/// - Me, 2020-01-01
-	/// This function is similar to `recheck_times` in course.rs, so if you read that you can skip this
+	///  - Me, 2020-01-01
+	///
+	/// This function is similar to `recheck_times` in course.rs, so if you read that you can skip this.
 	fn recheck_holidays(&mut self) {
 		let mut len = self.holidays.len();
 		// Since we don't know whether there are duplicates, we need to check every date against every other
@@ -103,7 +107,7 @@ impl Application {
 			.any(|(start, end)| date.is_between(start, end))
 	}
 
-	/// Creates a new default holiday from today to today, and adds it to the list of holidays
+	/// Creates a new default holiday from today to today, and adds it to the list of holidays.
 	pub fn new_holiday(&mut self) {
 		self.holidays.push((Date::today(), Date::today()));
 	}
@@ -116,20 +120,20 @@ impl Application {
 		self.recheck_holidays();
 	}
 
-	/// Removes holiday at index
-	/// Useful because the GUI module returns an index when a GUI element in a list is selected
+	/// Removes holiday at index.
+	/// Useful because the GUI module returns an index when a GUI element in a list is selected.
 	pub fn rm_holiday(&mut self, index: usize) {
 		self.holidays.remove(index);
 	}
 
-	/// Returns the memory representation of this object
-	/// Useful for when writing to a file, as it is tiny in comparison to JSON and the like
+	/// Returns the memory representation of this object.
+	/// Useful for when writing to a file, as it is tiny in comparison to JSON and the like.
 	pub fn serialize(&self) -> Vec<u8> {
 		bincode::serialize(self).unwrap()
 	}
 
-	/// Saves this application to `location`
-	/// Uses its in-memory location, see serialize
+	/// Saves this application to `location`.
+	/// Uses its in-memory location, see serialize.
 	pub fn save(&self, location: &str) {
 		if File::open(location).is_err() {
 			let mut file = File::create(location).unwrap();
@@ -140,8 +144,8 @@ impl Application {
 		}
 	}
 
-	/// Tries to load an application from a file, returns an error if unsuccessful
-	/// Looks complicated, but actually simple once you get to know it
+	/// Tries to load an application from a file, returns an error if unsuccessful.
+	/// Looks complicated, but actually simple once you get to know it.
 	pub fn load(location: &str) -> std::result::Result<Self, ()> {
 		// If we can successfully open the file at `location`,
 		if let Ok(mut file) = File::open(location) {
@@ -156,7 +160,7 @@ impl Application {
 		}
 	}
 
-	/// Tries to load an application, and returns an empty one if it fails
+	/// Tries to load an application, and returns an empty one if it fails.
 	pub fn load_or_default(location: &str) -> Self {
 		if let Ok(new) = Self::load(location) {
 			new
@@ -167,9 +171,9 @@ impl Application {
 }
 
 impl From<Vec<u8>> for Application {
-	/// Creating an Application from a byte array
-	/// Useful, as the memory representation is a byte array
-	/// Basically the `deserialize` method
+	/// Creating an Application from a byte array.
+	/// Useful, as the memory representation is a byte array.
+	/// Basically the `deserialize` method.
 	fn from(buf: Vec<u8>) -> Self {
 		bincode::deserialize(&buf).unwrap()
 	}
@@ -185,7 +189,7 @@ impl From<Vec<u8>> for Application {
 mod tests {
 	use super::*;
 
-	/// Helper function, returns a Date and asserts it is real
+	// Helper function, returns a Date and asserts it is real
 	fn date(year: u16, month: u8, day: u8) -> Date {
 		Date::new(year, month, day).unwrap()
 	}

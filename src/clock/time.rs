@@ -3,6 +3,7 @@ use super::*;
 // This struct is very boring, not much complexity going on
 // See date.rs to understand #[derive()]
 #[derive(Serialize, Deserialize, PartialEq, PartialOrd, Debug, Clone, Copy)]
+/// Time struct, for times. In 24hr style.
 pub struct Time {
 	hour: u8,
 	minute: u8,
@@ -21,7 +22,7 @@ impl Time {
 		format!("{:02}:{:02}", self.hour, self.minute)
 	}
 
-	/// Checks if the time is in between two other times
+	/// Checks if the time is in between two other times.
 	pub fn is_between(&self, start: &Time, end: &Time) -> bool {
 		start < self && self < end
 	}

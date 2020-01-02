@@ -3,6 +3,7 @@ use chrono::Weekday::*;
 
 // See date.rs to understand #[derive()]
 #[derive(Serialize, Deserialize, PartialEq, PartialOrd, Debug, Clone, Copy)]
+/// The day class contains the days of the week.
 pub enum Day {
 	Sunday,
 	Monday,
@@ -14,8 +15,8 @@ pub enum Day {
 }
 
 impl Day {
-	/// Gets what day it is today
-	/// It's basically a wrapper for an external library, making it nicer for internal use
+	/// Gets what day it is today.
+	/// It's basically a wrapper for an external library, making it nicer for internal use.
 	pub fn today() -> Self {
 		// We're depending on a foreign library for this
 		// Because, turns out, it's super difficult finding the day of a certain date

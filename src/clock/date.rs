@@ -6,6 +6,7 @@ use std::convert::TryFrom;
 // PartialOrd implements < and > for us
 // Copy is just Clone but automatically called whenever necessary, unlike Clone
 #[derive(Serialize, Deserialize, PartialEq, PartialOrd, Debug, Clone, Copy)]
+/// The date struct contains data for a date, such as 1984-01-24.
 pub struct Date {
 	year: u16,
 	month: u8,
@@ -33,12 +34,12 @@ impl Date {
 		}
 	}
 
-	/// Checks if the date is in between two other dates
+	/// Checks if the date is in between two other dates.
 	pub fn is_between(&self, start: &Date, end: &Date) -> bool {
 		start < self && self < end
 	}
 
-	/// Returns the date of today
+	/// Returns the date of today.
 	pub fn today() -> Self {
 		// We don't want to mess with different OS interfaces, so I'm just going to depend on Chrono for this one
 		let localtime = Local::now();
@@ -60,7 +61,7 @@ impl Date {
 // If this conversion fails, this method will return an Error
 impl TryFrom<String> for Date {
 	type Error = ();
-	/// The correct format here is YYYY-MM-DD, no other is accepted
+	/// The correct format here is YYYY-MM-DD, no other is accepted.
 	fn try_from(string: String) -> Result<Self, ()> {
 		// First, split the string by '-', so we get 3 parts
 		let segments: Vec<&str> = string.split('-').collect();
