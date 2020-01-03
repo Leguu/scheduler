@@ -50,15 +50,19 @@ pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
 
-	let mut vec = vec![ListBox::new(); 5];
+	let mut vec = Vec::new();
+	vec.push(ListBox::new());
+	vec.push(ListBox::new());
+	vec.push(ListBox::new());
+	vec.push(ListBox::new());
+	vec.push(ListBox::new());
 
 	for course in &application.borrow().courses {
 		for (day, start, end) in &course.times {
 			if *day as usize > 4 {
 				continue;
 			}
-			let insertion_point = &vec[*day as usize];
-			insertion_point.insert(
+			vec[*day as usize].insert(
 				&Label::new(Some(
 					format!("{}: {} to {}", course.name, start, end).as_str(),
 				)),
@@ -68,9 +72,8 @@ pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	}
 
 	for ((i, day), listbox) in (1..6).zip(Day::weekdays().iter()).zip(vec.drain(..)) {
-		let hw_frame = FrameBuilder::new().label(day.as_str()).build();
+		let hw_frame = frame_with_text(day.as_str(), &listbox);
 		listbox.set_selection_mode(SelectionMode::None);
-		hw_frame.add(&listbox);
 		hw_frame.set_hexpand(true);
 		hw_frame.set_vexpand(true);
 		grid.attach(&hw_frame, i, 0, 1, 1);
