@@ -2,16 +2,21 @@ use super::*;
 
 pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
+
 	let courses = ListBox::new();
-	for course in &application.borrow().courses {
-		for time in &course.times {
-			if time.0 == Day::today() {
-				courses.insert(
-					&Label::new(Some(
-						format!("{}: {} to {}", course.name, time.1, time.2).as_str(),
-					)),
-					-1,
-				);
+	if application.borrow().is_holiday(Date::today()) {
+		courses.insert(&Label::new(Some("Today's a holiday - no lessons!")), -1);
+	} else {
+		for course in &application.borrow().courses {
+			for time in &course.times {
+				if time.0 == Day::today() {
+					courses.insert(
+						&Label::new(Some(
+							format!("{}: {} to {}", course.name, time.1, time.2).as_str(),
+						)),
+						-1,
+					);
+				}
 			}
 		}
 	}
@@ -37,13 +42,12 @@ pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 	hw_frame.set_vexpand(true);
 
 	grid.attach(&courses_frame, 1, 0, 1, 1);
-	grid.attach(&Button::new_with_label("View / Edit"), 1, 1, 1, 1);
 	grid.attach(&hw_frame, 2, 0, 1, 1);
-	grid.attach(&Button::new_with_label("View / Edit"), 2, 1, 1, 1);
 }
 
 pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
+
 	let mut vec = Vec::new();
 	vec.push(ListBox::new());
 	vec.push(ListBox::new());

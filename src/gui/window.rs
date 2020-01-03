@@ -197,13 +197,24 @@ pub(super) fn task(
 	let f3 = frame_with_text("Due Date", &t3);
 
 	let listbox = ListBox::new();
-	for (done, desc) in &task.steps {
+	for (step_index, (done, desc)) in task.steps.iter().enumerate() {
 		let done_desc = if *done { "Done" } else { "Undone" };
 
-		let button = Button::new_with_label(done_desc);
+		let done_button = Button::new_with_label(done_desc);
+		done_button.connect_clicked(clone!(@weak application, @weak window => move |but| {
+			let course = &mut application.borrow_mut().courses[course_index];
+			let task = &mut course.tasks[task_index];
+			task.toggle_step(step_index);
+			match but.get_label().unwrap().as_str() {
+				"Done" => but.set_label("Undone"),
+				"Undone" => but.set_label("Done"),
+				_ => ()
+			}
+			window.show_all();
+		}));
 
 		let grid = Grid::new();
-		grid.attach(&button, 0, 0, 1, 1);
+		grid.attach(&done_button, 0, 0, 1, 1);
 		grid.attach(&Label::new(Some(desc)), 1, 0, 1, 1);
 		listbox.insert(&grid, -1);
 	}
@@ -218,11 +229,27 @@ pub(super) fn task(
 			let task = &mut course.tasks[task_index];
 			task.new_step();
 			let step = task.steps.last().unwrap();
-			// TODO: Remove this junk
-			listbox.insert(
-				&toggle_button(&step.1, "Undone"),
-				-1,
-			);
+			let step_index = task.steps.len() -1;
+
+			// This code is repeated above... For now I'll leave it as-is
+			let done_button = Button::new_with_label("Undone");
+			done_button.connect_clicked(clone!(@weak application, @weak window => move |but| {
+				let course = &mut application.borrow_mut().courses[course_index];
+				let task = &mut course.tasks[task_index];
+				task.toggle_step(step_index);
+				match but.get_label().unwrap().as_str() {
+					"Done" => but.set_label("Undone"),
+					"Undone" => but.set_label("Done"),
+					_ => ()
+				}
+				window.show_all();
+			}));
+
+			let grid = Grid::new();
+			grid.attach(&done_button, 0, 0, 1, 1);
+			grid.attach(&Label::new(Some(&step.1)), 1, 0, 1, 1);
+			listbox.insert(&grid, -1);
+
 			window.show_all();
 		}),
 	);
