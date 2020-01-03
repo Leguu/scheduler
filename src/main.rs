@@ -1,7 +1,3 @@
-// Stops compiler warnings for dead code
-// TODO: Remove this once the project is complete
-#![allow(dead_code)]
-
 use gio::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -10,7 +6,7 @@ use crate::application::Application;
 
 // Welcome to main!
 // This is pretty simple, and only exists to call other functions
-fn main() {
+pub fn main() {
 	let location = "edited_scheduler.bin";
 
 	let application = Application::load_or_default(location);
@@ -20,7 +16,7 @@ fn main() {
 }
 
 /// Initializer for our GUI app.
-fn gui_init(application: Application) {
+pub fn gui_init(application: Application) {
 	// we HAVE to surround Application in an Rc and RefCell for our GUI to work
 	// Rust's ownership system makes GUI development difficult
 	// Rc means "Reference Counted", allowing us to create as many references to application as we want
@@ -41,8 +37,7 @@ fn gui_init(application: Application) {
 	gui_app.run(&[]);
 }
 
-// TODO:
-fn cli_init(_application: Application) {
+pub fn cli_init(_application: Application) {
 	unimplemented!()
 }
 
