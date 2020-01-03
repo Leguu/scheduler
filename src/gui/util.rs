@@ -65,12 +65,13 @@ pub(super) fn triple_grid(text1: &str, text2: &str, text3: &str) -> Grid {
 	grid
 }
 
+// This is __bad__
 // Create a button with a toggle button next to it
 pub(super) fn toggle_button(text: &str, btn: &str) -> Grid {
 	let grid = Grid::new();
 	let button = Button::new_with_label(btn);
 	grid.attach(&button, 0, 0, 1, 1);
-	grid.attach(&text_with_default(text, None), 1, 0, 1, 1);
+	grid.attach(&Label::new(Some(text)), 1, 0, 1, 1);
 	grid
 }
 

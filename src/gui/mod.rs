@@ -35,9 +35,6 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 	let window = ApplicationWindow::new(app);
 	let grid = Grid::new();
 
-	let left_menu = ListBox::new();
-	left_menu.set_selection_mode(SelectionMode::None);
-
 	// The #1 reason why Rust makes it difficult to make UIs is in the lines below
 	// References can't be passed around willy-nilly like in C-derivative languages
 	// So, in order to pass around a reference to the application class, I need to downgrade it first
@@ -87,7 +84,6 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 			window.show_all();
 		}),
 	);
-	left_menu.insert(&button_main, -1);
 
 	let button_weekly = Button::new_with_label("Weekly");
 	button_weekly.connect_clicked(clone!(@weak grid, @weak window, @weak application
@@ -95,7 +91,6 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 		menu::weekly(&grid, application);
 		window.show_all();
 	}));
-	left_menu.insert(&button_weekly, -1);
 
 	let button_courses = Button::new_with_label("Courses");
 	button_courses.connect_clicked(
@@ -104,7 +99,6 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 			menu::courses(&grid, &app, &window, application);
 		}),
 	);
-	left_menu.insert(&button_courses, -1);
 
 	let button_holidays = Button::new_with_label("Holidays");
 	button_holidays.connect_clicked(
@@ -113,18 +107,21 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 			menu::holidays(&app, &grid, &window, application,);
 		}),
 	);
-	left_menu.insert(&button_holidays, -1);
 
 	let button_save = Button::new_with_label("Save");
-	button_save.connect_clicked(
-		clone!(@weak application => move |_| {
-			application.borrow().save("edited_scheduler.bin");
-		}),
-	);
+	button_save.connect_clicked(clone!(@weak application => move |_| {
+		application.borrow().save("edited_scheduler.bin");
+	}));
+
+	let left_menu = ListBox::new();
+	left_menu.set_selection_mode(SelectionMode::None);
+	left_menu.insert(&button_main, -1);
+	left_menu.insert(&button_weekly, -1);
+	left_menu.insert(&button_courses, -1);
+	left_menu.insert(&button_holidays, -1);
 	left_menu.insert(&button_save, -1);
 
-	let left_menu_frame = FrameBuilder::new().label("Menu").build();
-	left_menu_frame.add(&left_menu);
+	let left_menu_frame = frame_with_text("Menu", &left_menu);
 	left_menu_frame.set_vexpand(true);
 
 	grid.attach(&left_menu_frame, 0, 0, 1, 2);

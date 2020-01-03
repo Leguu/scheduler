@@ -25,21 +25,18 @@ pub(super) fn course(
 	}
 	let f4 = frame_with_text("Times", &listbox_times);
 	f4.set_hexpand(true);
+	f4.set_vexpand(true);
 
 	let listbox_tasks = ListBox::new();
 	for task in &course.tasks {
 		listbox_tasks.insert(
-			&Label::new(Some(&format!("{}: {}", task.is_complete_str(), task.desc))),
+			&Label::new(Some(&format!("{}: {}", task.is_complete_str(), task.name))),
 			-1,
 		);
 	}
 	let f5 = frame_with_text("Tasks", &listbox_tasks);
+	f5.set_vexpand(true);
 
-	let grid = Grid::new();
-	grid.attach(&f1, 0, 0, 2, 1);
-	grid.attach(&f2, 0, 1, 2, 1);
-	grid.attach(&f3, 0, 2, 2, 1);
-	grid.attach(&f4, 0, 3, 2, 1);
 	let button_add_time = Button::new_with_label("Add Time");
 	button_add_time.connect_clicked(
 		clone!(@weak listbox_times, @weak application, @weak window => move |_| {
@@ -52,7 +49,6 @@ pub(super) fn course(
 			window.show_all();
 		}),
 	);
-	grid.attach(&button_add_time, 0, 4, 1, 1);
 	let button_rm_time = Button::new_with_label("Rm Time");
 	button_rm_time.connect_clicked(
 		clone!( @weak listbox_times, @weak application, @weak window => move |_| {
@@ -64,7 +60,6 @@ pub(super) fn course(
 			}
 		}),
 	);
-	grid.attach(&button_rm_time, 1, 4, 1, 1);
 	let button_edit_time = Button::new_with_label("Edit Time");
 	button_edit_time.connect_clicked(
 		clone!(@weak listbox_times, @weak application, @weak gui_app => move |_| {
@@ -74,8 +69,6 @@ pub(super) fn course(
 			}
 		}),
 	);
-	grid.attach(&button_edit_time, 0, 5, 2, 1);
-	grid.attach(&f5, 0, 6, 2, 1);
 	let button_add_task = Button::new_with_label("Add Task");
 	button_add_task.connect_clicked(
 		clone!(@weak listbox_tasks, @weak application, @weak window => move |_| {
@@ -89,7 +82,6 @@ pub(super) fn course(
 			window.show_all();
 		}),
 	);
-	grid.attach(&button_add_task, 0, 7, 1, 1);
 	let button_rm_task = Button::new_with_label("Rm Task");
 	button_rm_task.connect_clicked(
 		clone!( @weak listbox_tasks, @weak application, @weak window => move |_| {
@@ -101,7 +93,6 @@ pub(super) fn course(
 			}
 		}),
 	);
-	grid.attach(&button_rm_task, 1, 7, 1, 1);
 	let button_edit_task = Button::new_with_label("Edit Task");
 	button_edit_task.connect_clicked(
 		clone!(@weak listbox_tasks, @weak application, @weak gui_app => move |_| {
@@ -111,8 +102,6 @@ pub(super) fn course(
 			}
 		}),
 	);
-	grid.attach(&button_edit_task, 0, 8, 2, 1);
-
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(
 		clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
@@ -122,6 +111,23 @@ pub(super) fn course(
 			course.room = get_string_from_text!(t3);
 		}),
 	);
+
+	let grid = Grid::new();
+	grid.attach(&f1, 0, 0, 2, 1);
+	grid.attach(&f2, 0, 1, 2, 1);
+	grid.attach(&f3, 0, 2, 2, 1);
+	grid.attach(&f4, 0, 3, 2, 1);
+
+	grid.attach(&button_add_time, 0, 4, 1, 1);
+	grid.attach(&button_rm_time, 1, 4, 1, 1);
+	grid.attach(&button_edit_time, 0, 5, 2, 1);
+
+	grid.attach(&f5, 0, 6, 2, 1);
+
+	grid.attach(&button_add_task, 0, 7, 1, 1);
+	grid.attach(&button_rm_task, 1, 7, 1, 1);
+	grid.attach(&button_edit_task, 0, 8, 2, 1);
+
 	grid.attach(&button_save, 0, 9, 2, 1);
 
 	window.add(&grid);
@@ -143,9 +149,6 @@ pub(super) fn holiday(
 	let f2 = frame_with_text("End Date", &t2);
 	f2.set_hexpand(true);
 
-	let grid = Grid::new();
-	grid.attach(&f1, 0, 1, 1, 1);
-	grid.attach(&f2, 0, 2, 1, 1);
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(clone!(@weak t1, @weak t2, @weak application => move |_| {
 		if let (Ok(start), Ok(end)) = (
@@ -161,6 +164,11 @@ pub(super) fn holiday(
 			message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
 		}
 	}));
+
+	let grid = Grid::new();
+	grid.attach(&f1, 0, 1, 1, 1);
+	grid.attach(&f2, 0, 2, 1, 1);
+
 	grid.attach(&button_save, 0, 3, 1, 1);
 
 	window.add(&grid);
@@ -178,29 +186,31 @@ pub(super) fn task(
 	let course = &mut application.borrow_mut().courses[course_index];
 	let task = &mut course.tasks[task_index];
 
-	let f1 = frame_with_text("Task Name", &text_with_default(&task.name, None));
-	let f2 = frame_with_text(
-		"Description",
-		&text_with_default(&task.desc, Some(WrapMode::Word)),
-	);
-	let f3 = frame_with_text("Due Date", &text_with_default(&task.due.to_string(), None));
+	let t1 = text_with_default(&task.name, None);
+	let f1 = frame_with_text("Task Name", &t1);
+
+	let t2 = text_with_default(&task.desc, Some(WrapMode::Word));
+	let f2 = frame_with_text("Description", &t2);
 	f2.set_hexpand(true);
+
+	let t3 = text_with_default(&task.due.to_string(), None);
+	let f3 = frame_with_text("Due Date", &t3);
 
 	let listbox = ListBox::new();
 	for (done, desc) in &task.steps {
 		let done_desc = if *done { "Done" } else { "Undone" };
-		listbox.insert(&toggle_button(desc, done_desc), -1);
-	}
-	// listbox.set_selection_mode(SelectionMode::None);
 
+		let button = Button::new_with_label(done_desc);
+
+		let grid = Grid::new();
+		grid.attach(&button, 0, 0, 1, 1);
+		grid.attach(&Label::new(Some(desc)), 1, 0, 1, 1);
+		listbox.insert(&grid, -1);
+	}
 	let f4 = Frame::new(Some("Task Steps"));
+	f4.set_vexpand(true);
 	f4.add(&listbox);
 
-	let grid = Grid::new();
-	grid.attach(&f1, 0, 0, 2, 1);
-	grid.attach(&f2, 0, 1, 2, 1);
-	grid.attach(&f3, 0, 2, 2, 1);
-	grid.attach(&f4, 0, 3, 2, 1);
 	let button_add_step = Button::new_with_label("Add Step");
 	button_add_step.connect_clicked(
 		clone!(@weak listbox, @weak application, @weak window => move |_| {
@@ -208,6 +218,7 @@ pub(super) fn task(
 			let task = &mut course.tasks[task_index];
 			task.new_step();
 			let step = task.steps.last().unwrap();
+			// TODO: Remove this junk
 			listbox.insert(
 				&toggle_button(&step.1, "Undone"),
 				-1,
@@ -215,7 +226,6 @@ pub(super) fn task(
 			window.show_all();
 		}),
 	);
-	grid.attach(&button_add_step, 0, 5, 1, 1);
 	let button_rm_step = Button::new_with_label("Rm Step");
 	button_rm_step.connect_clicked(
 		clone!( @weak listbox, @weak application, @weak window => move |_| {
@@ -227,9 +237,68 @@ pub(super) fn task(
 			}
 		}),
 	);
-	grid.attach(&button_rm_step, 1, 5, 1, 1);
-	grid.attach(&Button::new_with_label("Save"), 0, 6, 2, 1);
+	let button_edit_step = Button::new_with_label("Edit Step");
+	button_edit_step.connect_clicked(clone!( @weak gui_app, @weak application => move |_| {
+		if let Some(row) = listbox.get_selected_row() {
+			let step_index = row.get_index() as usize;
+			window::step_dialog(course_index, task_index, step_index, &gui_app, application);
+		}
+	}));
+	let button_save = Button::new_with_label("Save");
+	button_save.connect_clicked(clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
+		let course = &mut application.borrow_mut().courses[course_index];
+		let task = &mut course.tasks[task_index];
 
+		task.name = get_string_from_text!(t1);
+		task.desc = get_string_from_text!(t2);
+
+		if let Ok(due) = Date::try_from(get_string_from_text!(t3)) {
+			task.due = due;
+		} else {
+			message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
+		}
+	}));
+
+	let grid = Grid::new();
+	grid.attach(&f1, 0, 0, 2, 1);
+	grid.attach(&f2, 0, 1, 2, 1);
+	grid.attach(&f3, 0, 2, 2, 1);
+	grid.attach(&f4, 0, 3, 2, 1);
+
+	grid.attach(&button_add_step, 0, 5, 1, 1);
+	grid.attach(&button_rm_step, 1, 5, 1, 1);
+	grid.attach(&button_edit_step, 0, 6, 2, 1);
+
+	grid.attach(&button_save, 0, 7, 2, 1);
+
+	window.add(&grid);
+	window.show_all();
+}
+
+pub(super) fn step_dialog(
+	course_index: usize,
+	task_index: usize,
+	step_index: usize,
+	gui_app: &gtk::Application,
+	application: Rc<RefCell<Application>>,
+) {
+	let course = &mut application.borrow_mut().courses[course_index];
+	let task = &mut course.tasks[task_index];
+	let step = &mut task.steps[step_index];
+
+	let text_box = text_with_default(&step.1, None);
+	let button_save = Button::new_with_label("Save");
+	button_save.connect_clicked(clone!(@weak text_box, @weak application => move |_| {
+		let course = &mut application.borrow_mut().courses[course_index];
+		let task = &mut course.tasks[task_index];
+		task.steps[step_index].1 = get_string_from_text!(text_box);
+	}));
+
+	let grid = Grid::new();
+	grid.attach(&text_box, 0, 0, 1, 1);
+	grid.attach(&button_save, 0, 1, 1, 1);
+
+	let window = ApplicationWindow::new(gui_app);
 	window.add(&grid);
 	window.show_all();
 }
