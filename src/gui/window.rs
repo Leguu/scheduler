@@ -245,19 +245,21 @@ pub(super) fn task(
 		}
 	}));
 	let button_save = Button::new_with_label("Save");
-	button_save.connect_clicked(clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
-		let course = &mut application.borrow_mut().courses[course_index];
-		let task = &mut course.tasks[task_index];
+	button_save.connect_clicked(
+		clone!(@weak t1, @weak t2, @weak t3, @weak application => move |_| {
+			let course = &mut application.borrow_mut().courses[course_index];
+			let task = &mut course.tasks[task_index];
 
-		task.name = get_string_from_text!(t1);
-		task.desc = get_string_from_text!(t2);
+			task.name = get_string_from_text!(t1);
+			task.desc = get_string_from_text!(t2);
 
-		if let Ok(due) = Date::try_from(get_string_from_text!(t3)) {
-			task.due = due;
-		} else {
-			message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
-		}
-	}));
+			if let Ok(due) = Date::try_from(get_string_from_text!(t3)) {
+				task.due = due;
+			} else {
+				message_dialog("Date entry invalid. Recheck entry, and only use numbers in format: 'YYYY-MM-DD'.");
+			}
+		}),
+	);
 
 	let grid = Grid::new();
 	grid.attach(&f1, 0, 0, 2, 1);

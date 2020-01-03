@@ -13,13 +13,21 @@ use crate::application::Application;
 fn main() {
 	let location = "edited_scheduler.bin";
 
+	let application = Application::load_or_default(location);
+
+	gui_init(application);
+	// TODO: cli_init(application);
+}
+
+/// Initializer for our GUI app.
+fn gui_init(application: Application) {
 	// we HAVE to surround Application in an Rc and RefCell for our GUI to work
 	// Rust's ownership system makes GUI development difficult
 	// Rc means "Reference Counted", allowing us to create as many references to application as we want
 	// RefCell allows us to modify application from wherever we want, using only an immutable reference
 	// Note that this is not allowed by the language by default, but is nonetheless necessary for GUI apps
-	// Seasoned Rust developers such as myself do not use Rc and RefCell unless absolutely necessary
-	let application = Rc::new(RefCell::new(Application::load_or_default(location)));
+	// It's best not to use Rc and RefCell unless absolutely necessary
+	let application = Rc::new(RefCell::new(application));
 
 	// The code below initializes the GUI application (GTK) and launches it
 	// See the `gui` module (directory) for all the GUI-related components
@@ -31,6 +39,11 @@ fn main() {
 	});
 
 	gui_app.run(&[]);
+}
+
+// TODO:
+fn cli_init(_application: Application) {
+	unimplemented!()
 }
 
 // Making these modules accessible
