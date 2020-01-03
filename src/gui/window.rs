@@ -144,8 +144,10 @@ pub(super) fn holiday(
 
 	let t1 = text_with_default(&holiday.0.as_string(), None);
 	let t2 = text_with_default(&holiday.1.as_string(), None);
+
 	let f1 = frame_with_text("Start Date", &t1);
 	f1.set_hexpand(true);
+
 	let f2 = frame_with_text("End Date", &t2);
 	f2.set_hexpand(true);
 
@@ -187,13 +189,12 @@ pub(super) fn task(
 	let task = &mut course.tasks[task_index];
 
 	let t1 = text_with_default(&task.name, None);
-	let f1 = frame_with_text("Task Name", &t1);
-
 	let t2 = text_with_default(&task.desc, Some(WrapMode::Word));
+	let t3 = text_with_default(&task.due.to_string(), None);
+
+	let f1 = frame_with_text("Task Name", &t1);
 	let f2 = frame_with_text("Description", &t2);
 	f2.set_hexpand(true);
-
-	let t3 = text_with_default(&task.due.to_string(), None);
 	let f3 = frame_with_text("Due Date", &t3);
 
 	let listbox = ListBox::new();
@@ -218,9 +219,8 @@ pub(super) fn task(
 		grid.attach(&Label::new(Some(desc)), 1, 0, 1, 1);
 		listbox.insert(&grid, -1);
 	}
-	let f4 = Frame::new(Some("Task Steps"));
+	let f4 = frame_with_text("Task Steps", &listbox);
 	f4.set_vexpand(true);
-	f4.add(&listbox);
 
 	let button_add_step = Button::new_with_label("Add Step");
 	button_add_step.connect_clicked(
@@ -341,19 +341,17 @@ pub(super) fn time_dialog(
 	let course = &application.borrow().courses[course_index];
 	let (day, start, end) = course.times[time_index];
 
-	let grid = Grid::new();
 	let t1 = text_with_default(day.as_str(), None);
 	t1.set_left_margin(3);
 	t1.set_right_margin(3);
+
 	let t2 = text_with_default(&start.to_string(), None);
 	t2.set_left_margin(3);
 	t2.set_right_margin(3);
+
 	let t3 = text_with_default(&end.to_string(), None);
 	t3.set_left_margin(3);
 	t3.set_right_margin(3);
-	grid.attach(&t1, 0, 0, 1, 1);
-	grid.attach(&t2, 1, 0, 1, 1);
-	grid.attach(&t3, 2, 0, 1, 1);
 
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(
@@ -375,6 +373,12 @@ pub(super) fn time_dialog(
 			}
 		}),
 	);
+
+	let grid = Grid::new();
+	grid.attach(&t1, 0, 0, 1, 1);
+	grid.attach(&t2, 1, 0, 1, 1);
+	grid.attach(&t3, 2, 0, 1, 1);
+
 	grid.attach(&button_save, 0, 1, 3, 1);
 
 	let window = ApplicationWindow::new(gui_app);

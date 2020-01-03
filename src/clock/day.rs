@@ -45,6 +45,16 @@ impl Day {
 			Self::Saturday => "Saturday",
 		}
 	}
+
+	pub fn weekdays() -> [Self; 5] {
+		[
+			Day::Sunday,
+			Day::Monday,
+			Day::Tuesday,
+			Day::Wednesday,
+			Day::Thursday,
+		]
+	}
 }
 
 // I am implementing TryFrom for the String class

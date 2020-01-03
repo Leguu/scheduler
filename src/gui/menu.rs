@@ -48,12 +48,7 @@ pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
 
-	let mut vec = Vec::new();
-	vec.push(ListBox::new());
-	vec.push(ListBox::new());
-	vec.push(ListBox::new());
-	vec.push(ListBox::new());
-	vec.push(ListBox::new());
+	let mut vec = vec![ListBox::new(); 5];
 
 	for course in &application.borrow().courses {
 		for (day, start, end) in &course.times {
@@ -70,19 +65,7 @@ pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 		}
 	}
 
-	for ((i, day), listbox) in (1..6)
-		.zip(
-			[
-				Day::Sunday,
-				Day::Monday,
-				Day::Tuesday,
-				Day::Wednesday,
-				Day::Thursday,
-			]
-			.iter(),
-		)
-		.zip(vec.drain(..))
-	{
+	for ((i, day), listbox) in (1..6).zip(Day::weekdays().iter()).zip(vec.drain(..)) {
 		let hw_frame = FrameBuilder::new().label(day.as_str()).build();
 		listbox.set_selection_mode(SelectionMode::None);
 		hw_frame.add(&listbox);
@@ -99,16 +82,14 @@ pub(super) fn courses(
 	application: Rc<RefCell<Application>>,
 ) {
 	clear(grid);
+
 	let listbox = ListBox::new();
 	for course in &application.borrow().courses {
 		listbox.insert(&Label::new(Some(&course.name)), -1);
 	}
-	let frame2 = FrameBuilder::new().label("Courses").build();
-	frame2.add(&listbox);
+	let frame2 = frame_with_text("Courses", &listbox);
 	frame2.set_hexpand(true);
 	frame2.set_vexpand(true);
-
-	grid.attach(&frame2, 1, 0, 2, 1);
 
 	let add_button = Button::new_with_label("Add");
 	add_button.connect_clicked(
@@ -119,7 +100,6 @@ pub(super) fn courses(
 			courses(&grid, &gui_app, &window, application);
 		}),
 	);
-	grid.attach(&add_button, 1, 1, 1, 1);
 
 	let remove_button = Button::new_with_label("Remove");
 	remove_button.connect_clicked(
@@ -131,7 +111,6 @@ pub(super) fn courses(
 			}
 		}),
 	);
-	grid.attach(&remove_button, 2, 1, 1, 1);
 
 	let edit_button = Button::new_with_label("View / Edit");
 	edit_button.connect_clicked(clone!( @weak listbox, @weak gui_app => move |_| {
@@ -140,7 +119,12 @@ pub(super) fn courses(
 			window::course(&gui_app, index as usize, application.clone());
 		}
 	}));
+
+	grid.attach(&frame2, 1, 0, 2, 1);
+	grid.attach(&add_button, 1, 1, 1, 1);
+	grid.attach(&remove_button, 2, 1, 1, 1);
 	grid.attach(&edit_button, 1, 2, 2, 1);
+
 	window.show_all();
 }
 
@@ -159,12 +143,9 @@ pub(super) fn holidays(
 			-1,
 		);
 	}
-	let frame2 = FrameBuilder::new().label("Holidays").build();
-	frame2.add(&listbox);
+	let frame2 = frame_with_text("Holidays", &listbox);
 	frame2.set_hexpand(true);
 	frame2.set_vexpand(true);
-
-	grid.attach(&frame2, 1, 0, 2, 1);
 
 	let add_button = Button::new_with_label("Add");
 	add_button.connect_clicked(
@@ -175,7 +156,6 @@ pub(super) fn holidays(
 			holidays(&gui_app, &grid, &window, application);
 		}),
 	);
-	grid.attach(&add_button, 1, 1, 1, 1);
 
 	let remove_button = Button::new_with_label("Remove");
 	remove_button.connect_clicked(
@@ -188,7 +168,6 @@ pub(super) fn holidays(
 			}
 		}),
 	);
-	grid.attach(&remove_button, 2, 1, 1, 1);
 
 	let edit_button = Button::new_with_label("View / Edit");
 	edit_button.connect_clicked(clone!(@weak listbox, @weak gui_app => move |_| {
@@ -197,6 +176,11 @@ pub(super) fn holidays(
 			window::holiday(&gui_app, index as usize, application.clone());
 		}
 	}));
+
+	grid.attach(&frame2, 1, 0, 2, 1);
+	grid.attach(&add_button, 1, 1, 1, 1);
+	grid.attach(&remove_button, 2, 1, 1, 1);
 	grid.attach(&edit_button, 1, 2, 2, 1);
+
 	window.show_all();
 }
