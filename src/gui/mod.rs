@@ -1,3 +1,5 @@
+//! This module contains all the GUI-related code.
+
 use glib::clone;
 use gtk::prelude::*;
 use gtk::*;
@@ -10,8 +12,11 @@ use crate::clock::*;
 use util::*;
 
 #[macro_use]
+/// For utility functions, they're generic and not specific to this application.
 mod util;
+/// For functions that modify the main window, without opening a new one.
 mod menu;
+/// For functions that open new windows.
 mod window;
 
 // Welcome brave soul to the `gui` module.

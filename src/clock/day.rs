@@ -63,14 +63,14 @@ impl Day {
 impl TryFrom<String> for Day {
 	type Error = ();
 	fn try_from(string: String) -> Result<Self, ()> {
-		match string.as_str() {
-			"Sunday" => Ok(Self::Sunday),
-			"Monday" => Ok(Self::Monday),
-			"Tuesday" => Ok(Self::Tuesday),
-			"Wednesday" => Ok(Self::Wednesday),
-			"Thursday" => Ok(Self::Thursday),
-			"Friday" => Ok(Self::Friday),
-			"Saturday" => Ok(Self::Saturday),
+		match string.to_lowercase().as_str() {
+			"sunday" => Ok(Self::Sunday),
+			"monday" => Ok(Self::Monday),
+			"tuesday" => Ok(Self::Tuesday),
+			"wednesday" => Ok(Self::Wednesday),
+			"thursday" => Ok(Self::Thursday),
+			"friday" => Ok(Self::Friday),
+			"saturday" => Ok(Self::Saturday),
 			_ => Err(()),
 		}
 	}

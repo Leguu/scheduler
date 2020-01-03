@@ -122,22 +122,14 @@ mod tests {
 
 	#[test]
 	fn validation() {
-		// Here we check if the dates are valid.
-		// Various test statements
-
-		// Read: `assert that 2019-10-28 is_ok`
 		assert!(Date::new(2019, 10, 28).is_ok());
 		assert!(Date::new(2000, 1, 1).is_ok());
-
-		// Read: `assert that 2019-10-32 is NOT ok`
 		assert!(!Date::new(2019, 10, 32).is_ok());
 		assert!(!Date::new(2019, 13, 1).is_ok()); // Array out of bounds error!, fixed
 	}
 
 	#[test]
 	fn comparison() {
-		// Just checking that the < and > operators work
-		// This was implemented with the #derive statement
 		let date1 = Date::new(1990, 1, 1);
 		let date2 = Date::new(2000, 1, 1);
 		assert!(date1 < date2);

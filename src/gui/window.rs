@@ -1,5 +1,6 @@
 use super::*;
 
+/// Pop-up window for a specific course.
 pub(super) fn course(
 	gui_app: &gtk::Application,
 	index: usize,
@@ -134,6 +135,7 @@ pub(super) fn course(
 	window.show_all();
 }
 
+/// Pop-up window for editing a holiday.
 pub(super) fn holiday(
 	gui_app: &gtk::Application,
 	index: usize,
@@ -177,6 +179,7 @@ pub(super) fn holiday(
 	window.show_all();
 }
 
+/// Pop-up window for editing a task.
 pub(super) fn task(
 	course_index: usize,
 	task_index: usize,
@@ -304,6 +307,7 @@ pub(super) fn task(
 	window.show_all();
 }
 
+/// A small dialog for editing a step.
 pub(super) fn step_dialog(
 	course_index: usize,
 	task_index: usize,
@@ -332,6 +336,7 @@ pub(super) fn step_dialog(
 	window.show_all();
 }
 
+/// A small dialog for editing a time.
 pub(super) fn time_dialog(
 	time_index: usize,
 	course_index: usize,

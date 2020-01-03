@@ -1,3 +1,5 @@
+//! This is the documentation for the scheduler app, generated automatically by Cargo!
+
 use gio::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -5,8 +7,8 @@ use std::rc::Rc;
 use crate::application::Application;
 
 // Welcome to main!
-// This is pretty simple, and only exists to call other functions
-pub fn main() {
+/// This is pretty simple, and only exists to call the init functions.
+fn main() {
 	let location = "edited_scheduler.bin";
 
 	let application = Application::load_or_default(location);
@@ -37,6 +39,7 @@ pub fn gui_init(application: Application) {
 	gui_app.run(&[]);
 }
 
+/// Initializer for our CLI app.
 pub fn cli_init(_application: Application) {
 	unimplemented!()
 }

@@ -1,5 +1,6 @@
 use super::*;
 
+/// Open the "main" menu with today's courses and this week's tasks.
 pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
 
@@ -45,6 +46,7 @@ pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 	grid.attach(&hw_frame, 2, 0, 1, 1);
 }
 
+/// Open the weekly courses page. Has the weekdays Sunday-Thursday.
 pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	clear(grid);
 
@@ -75,6 +77,7 @@ pub(super) fn weekly(grid: &Grid, application: Rc<RefCell<Application>>) {
 	}
 }
 
+/// Shows the list of all courses.
 pub(super) fn courses(
 	grid: &Grid,
 	gui_app: &gtk::Application,
@@ -128,6 +131,7 @@ pub(super) fn courses(
 	window.show_all();
 }
 
+/// Shows a list of all holidays.
 pub(super) fn holidays(
 	gui_app: &gtk::Application,
 	grid: &Grid,
