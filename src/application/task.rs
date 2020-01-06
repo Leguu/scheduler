@@ -43,9 +43,10 @@ impl Task {
 	/// Add a step to the task, incomplete by default.
 	/// If it's the first step in the task, removes the dummy step.
 	pub fn add_step<T: Into<String>>(&mut self, description: T) {
-		if self.steps[0] == (false, "Completed?".to_string()) {
-			self.steps.remove(0);
-		}
+		// Causes a bug! GUI module is limited here
+		// if self.steps[0] == (false, "Completed?".to_string()) {
+		// 	self.steps.remove(0);
+		// }
 		self.steps.push((false, description.into()));
 	}
 
