@@ -115,7 +115,7 @@ pub fn build_ui(app: &gtk::Application, application: Rc<RefCell<Application>>) {
 
 	let button_save = Button::new_with_label("Save");
 	button_save.connect_clicked(clone!(@weak application => move |_| {
-		application.borrow().save("edited_scheduler.bin");
+		application.borrow().save("scheduler.bin");
 	}));
 
 	let left_menu = ListBox::new();

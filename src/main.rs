@@ -9,7 +9,7 @@ use crate::application::Application;
 // Welcome to main!
 /// This is pretty simple, and only exists to call the init functions.
 fn main() {
-	let location = "edited_scheduler.bin";
+	let location = "scheduler.bin";
 
 	let application = Application::load_or_default(location);
 
