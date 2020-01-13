@@ -1,6 +1,6 @@
 # Scheduler Application
 
-If you only wish to compile / run, skip to [Compilation Instructions](##Compilation-Instructions)
+If you only wish to compile / run, skip to [Compilation / Running Instructions](#compilation--running-instructions)
 
 ## Overview
 
@@ -27,31 +27,39 @@ For more information on how these structures work together, see the comments in 
 
 This project is versioned with git! You can check the git history using `git log`. Unfortunately, I initialized git a bit late into the process, so most of the application and clock modules' history is not available.
 
-## Compilation Instructions
+## Compilation / Running Instructions
 
 The only dependencies you need to have installed on your system is GTK+3 and Rust itself. Keep in mind Rust will download additional dependencies when you compile, but those are only local (if you run `cargo clean`, it will delete all cached files). Here are some ways you can install it on your system:
 
-MacOS (NOT TESTED):
+### Installing Dependencies
+
+MacOS:
 - Install [Homebrew](https://brew.sh/), a package manager for Mac.
 - Run: `brew install gtk+3` with `sudo` if necessary.
-- Install [Rust](https://www.rust-lang.org/tools/install).
 
 Linux:
-- Install GTK+3 using your system's package manager.
-    - This may be apt, pacman, etc.
-- Install Rust in the same manner.
-    - Or, install via the [Official Site](https://www.rust-lang.org/tools/install).
+- Install through your system's package manager.
 
-Windows (NOT TESTED):
-- Install [Chocolatey](https://chocolatey.org/install), a package manager for Windows.
-- Run: `choco install gtk-runtime`
-- Install [Rust](https://www.rust-lang.org/tools/install).
+Windows:
+- Follow the instructions here [GTK+3](https://www.gtk.org/download/windows.php). 
+
+### Running the Project
+
+You can now run the appropriate executable in the Product folder. `scheduler_mac` for MacOS, `scheduler_linux` for GNU/Linux systems, and `scheduler.exe` for Windows. Read on if you wish to compile the project yourself. 
+
+### Installing Rust
+
+Install Rust using your system's package manager (Homebrew, apt, pacman, etc.) or through [their website](https://www.rust-lang.org/tools/install).
+
+### Compiling the Project
 
 When you have downloaded the necessary dependencies, now:
 - In the directory with `Cargo.toml`, run `cargo build`.
     - This will build the project.
 - Now, you can run the project with `cargo run`.
 - Alternatively, run the executable at `target/debug/scheduler`.
+
+### Compiling Documentation
 
 You may now run `cargo doc --no-deps --document-private-items --open` to open the documentation for this project.
 
