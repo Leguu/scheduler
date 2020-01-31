@@ -33,7 +33,7 @@ impl Date {
 
 	/// Checks if the date is in between two other dates.
 	pub fn is_between(self, start: Date, end: Date) -> bool {
-		start < self && self < end
+		start <= self && self <= end
 	}
 
 	/// Returns the date of today.
