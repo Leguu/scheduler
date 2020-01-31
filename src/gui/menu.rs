@@ -29,7 +29,8 @@ pub(super) fn main(grid: &Grid, application: Rc<RefCell<Application>>) {
 	let hw = ListBox::new();
 	for course in &application.borrow().courses {
 		for task in &course.tasks {
-			if Date::today() <= task.due && task.due <= Date::today() + 7 {
+			if Date::today() <= task.due && task.due <= Date::today() + 7 
+                            && !task.is_complete() {
 				hw.insert(
 					&Label::new(Some(format!("{}: {}", task.name, task.desc).as_str())),
 					-1,
