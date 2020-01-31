@@ -94,7 +94,7 @@ impl std::ops::Add<usize> for Date {
 		let day_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][self.month as usize];
 
 		self.day += other as u8;
-		if self.day / day_in_month > 1 {
+		if self.day > day_in_month {
 			self.month += 1;
 		}
 		self.day %= day_in_month;
@@ -129,9 +129,16 @@ mod tests {
 	}
 
 	#[test]
+	fn addition() {
+		let date1 = Date::new(2000, 1, 31).unwrap();
+		let date2 = Date::new(2000, 2, 7).unwrap();
+		assert_eq!(date1 + 7, date2);
+	}
+
+	#[test]
 	fn comparison() {
-		let date1 = Date::new(1990, 1, 1);
-		let date2 = Date::new(2000, 1, 1);
+		let date1 = Date::new(1990, 1, 1).unwrap();
+		let date2 = Date::new(2000, 1, 1).unwrap();
 		assert!(date1 < date2);
 	}
 
